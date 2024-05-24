@@ -17,4 +17,6 @@ interface IUsuarioCPF {
 
 
 
+
+
 export {IUsuarioCPF,IUsuarioCriacao};

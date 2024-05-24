@@ -6,9 +6,9 @@ import { tratarError } from "./error/tratarError";
 
 const app = express();
 app.use(express.json());
-app.use(tratarError);
 
 app.use('/usuario', usuarioRouter);
 
 
+app.use(tratarError);
 export {app}

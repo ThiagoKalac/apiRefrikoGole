@@ -1,10 +1,10 @@
 import { Router } from "express";
 import { validadorDadosMiddleware } from "../middlewares/validadorDados.middleware";
-import { validarCpfSchema } from "../schema/usuario/vaalidarCpf.schema";
+import { infoUsuarioController } from "../controllers/usuario/infoUsuario.Controller";
 
 const usuarioRouter = Router();
 
-//rota para verificar se o usuario é funcionario
-usuarioRouter.get('/validar_cpf/:cpf',validadorDadosMiddleware(validarCpfSchema))
+//rota para trazer informações do usuario na SENIOR e SAIB
+usuarioRouter.get('/info_usuario/:cpf',infoUsuarioController)
 
 export {usuarioRouter}
