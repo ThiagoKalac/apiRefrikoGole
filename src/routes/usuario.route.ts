@@ -5,6 +5,11 @@ import { infoUsuarioController } from "../controllers/usuario/infoUsuario.Contro
 const usuarioRouter = Router();
 
 //rota para trazer informações do usuario na SENIOR e SAIB
-usuarioRouter.get('/info_usuario/:cpf',infoUsuarioController)
+usuarioRouter.get('/info_usuario/:cpf',infoUsuarioController);
+
+//rota para cadastrar cliente
+usuarioRouter.post('/cadastro');
+
+//
 
 export {usuarioRouter}
