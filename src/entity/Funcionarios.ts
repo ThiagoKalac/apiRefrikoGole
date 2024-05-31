@@ -5,6 +5,15 @@ export class Funcionarios {
   @PrimaryGeneratedColumn("increment", { type: "bigint", name: "id" })
   id: number;
 
+  @Column("character varying", {name:"empresa", nullable: true, length:5})
+  empresa: string | null;
+
+  @Column("character varying", {name:"cnpj", nullable: true, length:18})
+  cnpj: string | null;
+
+  @Column("character varying", {name:"id_empresa_saib", nullable: true, length:3})
+  id_empresa_saib: string | null;
+
   @Column("character varying", { name: "cpf", nullable: true, length: 40 })
   cpf: string | null;
 
