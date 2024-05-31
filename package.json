@@ -11,8 +11,10 @@
     "express-async-errors": "^3.1.1",
     "node-cron": "^3.0.3",
     "oracledb": "^5",
+    "pg": "^8.11.5",
     "reflect-metadata": "^0.1.13",
-    "typeorm": "^0.3.17"
+    "typeorm": "^0.3.17",
+    "yup": "^1.4.0"
   },
   "scripts": {
     "dev": "ts-node-dev --ignore-watch node_modules src/server.ts",
