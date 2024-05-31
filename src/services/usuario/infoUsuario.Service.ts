@@ -1,59 +1,57 @@
 import { DataSourceOracle, DataSourcePostGree } from "../../data-source";
+import { Funcionarios } from "../../entity/Funcionarios";
 import { AppError } from "../../error/appError";
-import { validarCpfSchema } from "../../schema/usuario/validarCpf.schema";
+
 
 const infoUsuarioService = async (cpf: string) => {
     let informacoesUsuario = {};
-    const cpfFormatado = cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
-    const cpfValidado = await validarCpf(cpfFormatado);
-    
-    const infoFuncionario = await infoUsuarioRh(cpfValidado)
-    const infoSaib = await infoUsuarioSaib(cpfValidado,42)
-
+    const infoFuncionario = await infoUsuarioRh(cpf)
+    const infoSaib = await infoUsuarioSaib(infoFuncionario.cpf, infoFuncionario.cod_empresa)
+   
     informacoesUsuario = {
-        cpf: infoSaib.cpf,
-        cod_saib: infoSaib.cod_saib
+        ...infoFuncionario,
+        ...infoSaib 
     }
-      
+
     return informacoesUsuario;
 }
 
 
-const validarCpf = async(cpf) => {
-    try {
-        const cpfValidado = await validarCpfSchema.validate({ cpf: cpf }, { abortEarly: false , stripUnknown: true, });
-        return cpfValidado
-    } catch (error) {
-        if (error.name === 'ValidationError') {
-            throw new AppError(error.errors,400);
+
+
+
+const infoUsuarioRh = async(cpf:string) => {
+
+    const funcionariosRepositorio = DataSourcePostGree.getRepository(Funcionarios);
+    const funcionario = await funcionariosRepositorio.findOne({
+        where:{
+            cpf: cpf
         }
-        throw new AppError('Erro desconhecido ao validar CPF',400);
-    }   
-} 
-
-
-const infoUsuarioRh = async(cpf) => {
-    try{
-
-        const teste = DataSourcePostGree.createQueryRunner();
-        const tabela = await teste.query(`
-            SELECT column_name, data_type, character_maximum_length, is_nullable
-            FROM information_schema.columns
-            WHERE table_schema = 'PBI' AND table_name = 'FUNCIONARIOS'
-        `)
+    })
     
-        console.log("Tabelas :", tabela);
-    
-        await teste.release();
-        await DataSourcePostGree.destroy();
-    }catch(error){
-        console.error("Erro ao listar as tabelas:", error);
+    if(!funcionario){
+        throw new AppError("Não é funcionario da empresa", 401)
     }
+    
+    return {
+        cpf: funcionario.cpf,
+        nome: funcionario.nome.split(" ")[0],
+        sobrenome:funcionario.nome.split(" ").slice(1).join(" "),
+        sexo: funcionario.sexo == 'M' ? 'masculino' :  'feminino',
+        cargo: funcionario.cargoNome,
+        empresa: funcionario.filialNome,
+        cod_empresa : parseInt(funcionario.id_empresa_saib),
+        credito:  Number(parseFloat(funcionario.limiete).toFixed(2))
+    }  
+    
 }
 
 
-const infoUsuarioSaib = async (cpf, empId=42) => {
-    const resultadoSaib = await DataSourceOracle
+const infoUsuarioSaib = async (cpf, empId) => {
+    const cpfFormatado = cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+
+
+    const respostaSaib = await DataSourceOracle
         .createQueryBuilder()
         .select([`
             C.CLI_ID AS COD_SAIB,
@@ -65,21 +63,37 @@ const infoUsuarioSaib = async (cpf, empId=42) => {
         `])
         .from('CLIENTE' , 'C')
         .innerJoin('CLIENTE_V', 'CV', 'CV.CLIV_CLI_EMP_ID = C.CLI_EMP_ID AND CV.CLIV_CLI_ID = C.CLI_ID')
-        .where(`C.CLI_CGC_CPF = :cpf`,{cpf:cpf.cpf})
+        .where(`C.CLI_CGC_CPF = :cpf`,{cpf:cpfFormatado})
         .andWhere(`C.CLI_EMP_ID = :empId`, {empId: empId})
         .getRawMany()
 
-    // 
-    if(!resultadoSaib){
-    throw new AppError("Usuario não cadastrado na SAIB", 404)
+    if(respostaSaib.length == 0) throw new AppError("Usuario não cadastrado na SAIB", 404);
+    
+    const rotaPorEmpresa = {
+        42: 603,
+        43: 603,
+        22: 53,
+        124: 53,
+        26: 53
+    }
+    
+    let rotaValida = false;
+    let registroValido;
+    
+                      
+
+    for (let info of respostaSaib){
+
+        if(info.ROTA == rotaPorEmpresa[empId]){
+            rotaValida = true;
+            registroValido = info;
+            break;
+        }
     }
 
-    console.log(resultadoSaib);
-    if(resultadoSaib[0].SAIB != 603){
-    throw new AppError(`Está cadastrado na ROTA ${resultadoSaib[0].SAIB}, falar com o pessoal do cadastro para alterar para 603`, 401)
-    }
-
-    return {cod_saib: resultadoSaib[0].COD_SAIB, cpf:resultadoSaib[0].CPF}
+    if (!rotaValida) throw new AppError(`Está cadastrado na ROTA ${respostaSaib[0].ROTA}, falar com o pessoal do cadastro para alterar para ${rotaPorEmpresa[empId]}`, 401);
+    
+    return {codigo_saib: registroValido.COD_SAIB}
 }
 
 
