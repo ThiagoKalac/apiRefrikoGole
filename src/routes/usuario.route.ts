@@ -2,6 +2,8 @@ import { Router } from "express";
 import { validadorDadosMiddleware } from "../middlewares/validadorDados.middleware";
 import { infoUsuarioController } from "../controllers/usuario/infoUsuario.Controller";
 import { validarCpfMiddleware } from "../middlewares/validarCpf.middleware";
+import { cadastroUsuarioSchema } from "../schema/usuario/cadastroUsuario.schema";
+import { cadastroUsuarioController } from "../controllers/usuario/cadastroUsuario.controller";
 
 const usuarioRouter = Router();
 
@@ -9,7 +11,12 @@ const usuarioRouter = Router();
 usuarioRouter.get('/info_usuario/:cpf',validarCpfMiddleware,infoUsuarioController);
 
 //rota para cadastrar cliente
-usuarioRouter.post('/cadastro');
+usuarioRouter.post('/cadastro', 
+    validarCpfMiddleware,
+    validadorDadosMiddleware(cadastroUsuarioSchema),
+    cadastroUsuarioController
+
+);
 
 //
 
