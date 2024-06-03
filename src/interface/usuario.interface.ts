@@ -6,9 +6,11 @@ interface IUsuarioCPF {
     nome: string;
     sobrenome: string;
     sexo: string;
-    setor: string;
     cargo: string;
     empresa: string;
+    cod_empresa: number;
+    credito: number;
+    codigo_saib: number;
     senha: string;
     confirma_senha: string;
   }

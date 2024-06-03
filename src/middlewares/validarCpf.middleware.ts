@@ -2,7 +2,12 @@ import { NextFunction, Request, Response } from "express";
 
 
 const validarCpfMiddleware = async (req:Request, res:Response, next:NextFunction) => {
-    const cpf:string = req.params.cpf
+    const cpf:string = req.params.cpf ?  req.params.cpf :  req.body.cpf? req.body.cpf : null
+   
+    if(!cpf){
+        return res.status(400).json({mensagem: "Informar o CPF"})
+    }
+
     if(cpf.length < 11) return res.status(400).json({mensagem: "CPF tem menos de 11 caracteres"});
     if(cpf.length > 11) return res.status(400).json({mensagem: "CPF com mais de 11 caracteres, digite somente os números"});
     
@@ -14,7 +19,7 @@ const validarCpfMiddleware = async (req:Request, res:Response, next:NextFunction
         const validarDigito1 = validarDigito(numerosCpf, numerosCpf[9],10);
         const validarDigito2 = validarDigito(numerosCpf, numerosCpf[10],11);
 
-        if(validarDigito1 && validarDigito1){
+        if(validarDigito1 && validarDigito2){
             next()
         }else{
             return res.status(401).json({mensagem: "Atenção!! Número do CPF inválido"});
