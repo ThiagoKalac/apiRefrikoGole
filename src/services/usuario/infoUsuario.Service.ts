@@ -1,9 +1,10 @@
 import { DataSourceOracle, DataSourcePostGree } from "../../data-source";
 import { Funcionarios } from "../../entity/Funcionarios";
 import { AppError } from "../../error/appError";
+import { IRespostaInfoUsuario } from "../../interface/usuario.interface";
 
 
-const infoUsuarioService = async (cpf: string) => {
+const infoUsuarioService = async (cpf: string):Promise<IRespostaInfoUsuario> => {
     let informacoesUsuario = {};
     const infoFuncionario = await infoUsuarioRh(cpf)
     const infoSaib = await infoUsuarioSaib(infoFuncionario.cpf, infoFuncionario.cod_empresa)
@@ -11,9 +12,9 @@ const infoUsuarioService = async (cpf: string) => {
     informacoesUsuario = {
         ...infoFuncionario,
         ...infoSaib 
-    }
+    } 
 
-    return informacoesUsuario;
+    return informacoesUsuario as IRespostaInfoUsuario;
 }
 
 
@@ -32,6 +33,16 @@ const infoUsuarioRh = async(cpf:string) => {
     if(!funcionario){
         throw new AppError("Não é funcionário do Grupo Refriko, não pode realizar cadastro", 403)
     }
+
+    const empresaNome = {
+        42: 'refriko campo grande',
+        43: 'refriko dourados',
+        22: 'refriko cambé',
+        124: 'refriko curitiba',
+        26: 'refriko cascavel'
+    }
+
+
     
     return {
         cpf: funcionario.cpf,
@@ -39,7 +50,7 @@ const infoUsuarioRh = async(cpf:string) => {
         sobrenome:funcionario.nome.split(" ").slice(1).join(" ").toLocaleLowerCase(),
         sexo: funcionario.sexo == 'M' ? 'masculino' :  'feminino',
         cargo: funcionario.cargoNome.toLocaleLowerCase(),
-        empresa: funcionario.filialNome.toLocaleLowerCase(),
+        empresa: empresaNome[parseInt(funcionario.id_empresa_saib)],
         cod_empresa : parseInt(funcionario.id_empresa_saib),
         credito:  Number(parseFloat(funcionario.limiete).toFixed(2))
     }  

@@ -6,7 +6,7 @@ import { cadastroUsuarioService } from "../../services/usuario/cadastroUsuario.s
 const cadastroUsuarioController = async (req:Request, res:Response) => {
     const dadosParaCadastro : IUsuarioCriacao = req.body
     const criado : boolean = await cadastroUsuarioService(dadosParaCadastro)
-    return res.status(200).json("chegou no controller")
+    return res.status(201).json({mensagem: 'Cadastro realizado', criado})
 }
 
 export {cadastroUsuarioController}
