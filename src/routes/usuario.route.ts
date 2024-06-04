@@ -4,6 +4,7 @@ import { infoUsuarioController } from "../controllers/usuario/infoUsuario.Contro
 import { validarCpfMiddleware } from "../middlewares/validarCpf.middleware";
 import { cadastroUsuarioSchema } from "../schema/usuario/cadastroUsuario.schema";
 import { cadastroUsuarioController } from "../controllers/usuario/cadastroUsuario.controller";
+import { validarCpfExistenteMiddleware } from "../middlewares/validarCpfExistente.middleware";
 
 const usuarioRouter = Router();
 
@@ -13,6 +14,7 @@ usuarioRouter.get('/info_usuario/:cpf',validarCpfMiddleware,infoUsuarioControlle
 //rota para cadastrar cliente
 usuarioRouter.post('/cadastro', 
     validarCpfMiddleware,
+    validarCpfExistenteMiddleware,
     validadorDadosMiddleware(cadastroUsuarioSchema),
     cadastroUsuarioController
 
