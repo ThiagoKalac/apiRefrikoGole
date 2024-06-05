@@ -42,7 +42,7 @@ const infoUsuarioRh = async(cpf:string) => {
         26: 'refriko cascavel'
     }
 
-
+    console.log()
     
     return {
         cpf: funcionario.cpf,
