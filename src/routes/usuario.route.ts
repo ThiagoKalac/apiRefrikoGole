@@ -1,10 +1,11 @@
 import { Router } from "express";
 import { validadorDadosMiddleware } from "../middlewares/validadorDados.middleware";
-import { infoUsuarioController } from "../controllers/usuario/infoUsuario.Controller";
+import { infoUsuarioController } from "../controllers/usuario/infoUsuario.controller";
 import { validarCpfMiddleware } from "../middlewares/validarCpf.middleware";
 import { cadastroUsuarioSchema } from "../schema/usuario/cadastroUsuario.schema";
 import { cadastroUsuarioController } from "../controllers/usuario/cadastroUsuario.controller";
 import { validarCpfExistenteMiddleware } from "../middlewares/validarCpfExistente.middleware";
+
 
 const usuarioRouter = Router();
 
@@ -17,9 +18,8 @@ usuarioRouter.post('/cadastro',
     validarCpfExistenteMiddleware,
     validadorDadosMiddleware(cadastroUsuarioSchema),
     cadastroUsuarioController
-
 );
 
 //
 
-export {usuarioRouter}
+export {usuarioRouter};
