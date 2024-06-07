@@ -1,12 +1,12 @@
 import { DataSupabase } from "../../data-source";
-import { ILogin, ILoginResponse } from "../../interface/sessao.interface";
+import { ILogin, IAutorizacaoResponse } from "../../interface/sessao.interface";
 import { IUsuario } from "../../interface/usuario.interface";
 import { AppError } from "../../error/appError";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken"
 import "dotenv/config"
 
-const loginService = async (dadosLogin:ILogin):Promise<ILoginResponse> => {
+const loginService = async (dadosLogin:ILogin):Promise<IAutorizacaoResponse> => {
     const {cpf , senha } = dadosLogin;
     let usuario: IUsuario
 
@@ -40,7 +40,7 @@ const loginService = async (dadosLogin:ILogin):Promise<ILoginResponse> => {
         {expiresIn: "10m", subject: usuario.id}
     )
 
-    const tokenRefresh = jwt.sign({}, process.env.SECRET_KEY, {expiresIn: '7d'})
+    const tokenRefresh = jwt.sign({admin: usuario.admin}, process.env.SECRET_KEY, {expiresIn: '7d' , subject: usuario.id})
 
     const { error: updateError } = await DataSupabase
         .from('usuario')
