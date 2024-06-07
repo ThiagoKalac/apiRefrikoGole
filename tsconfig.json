@@ -7,10 +7,13 @@
     "moduleResolution": "node",
     "sourceMap": true,
     "outDir": "./dist",
+    "rootDir": "./src",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
     "typeRoots": ["src/@types", "node_modules/@types"]                           
-  }
+  },
+  "include": ["src/**/*", "types"],
+  "exclude": ["node_modules", "output"]
 }
 
