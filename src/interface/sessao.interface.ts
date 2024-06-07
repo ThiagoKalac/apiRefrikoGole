@@ -3,7 +3,7 @@ interface ILogin {
     senha: string;
 }
 
-interface ILoginResponse {
+interface IAutorizacaoResponse {
     token: string;
     id: string;
     cpf: string;
@@ -18,4 +18,4 @@ interface ILoginResponse {
 
 }
 
-export {ILogin, ILoginResponse}
+export {ILogin, IAutorizacaoResponse}
