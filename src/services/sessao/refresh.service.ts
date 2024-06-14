@@ -39,7 +39,7 @@ const refreshService = async (token:string):Promise<IAutorizacaoResponse> => {
                 admin: decode.admin
             },
             process.env.SECRET_KEY as jwt.Secret,
-            { expiresIn: "10m", subject: idUsuario as string }
+            { expiresIn: "2h", subject: idUsuario as string }
         );
 
     })
@@ -51,6 +51,7 @@ const refreshService = async (token:string):Promise<IAutorizacaoResponse> => {
         sexo: usuario.sexo,
         nome: usuario.nome,
         sobrenome: usuario.sobrenome,
+        whatsapp: usuario.whatsapp,
         cargo: usuario.cargo,
         empresa: usuario.empresa,
         cod_empresa: usuario.cod_empresa,

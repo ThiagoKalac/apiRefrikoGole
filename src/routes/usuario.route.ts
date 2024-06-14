@@ -5,12 +5,22 @@ import { validarCpfMiddleware } from "../middlewares/validarCpf.middleware";
 import { cadastroUsuarioSchema } from "../schema/usuario/cadastroUsuario.schema";
 import { cadastroUsuarioController } from "../controllers/usuario/cadastroUsuario.controller";
 import { validarCpfExistenteMiddleware } from "../middlewares/validarCpfExistente.middleware";
+import { 
+    recuperacaoSenhaSoliciarController, 
+    recuperacaoSenhaValidarController, 
+    recuperacaoSenhaAtualizarController 
+} from "../controllers/usuario/recuperacaoSenha.controller";
+import { recuperarSenhaAtualizarSchema, recuperarSenhaValidarSchema } from "../schema/usuario/recuperarSenha.schema";
+import { validarTokenMiddleware } from "../middlewares/validarToken.middleware";
 
 
 const usuarioRouter = Router();
 
 //rota para trazer informações do usuario na SENIOR e SAIB
-usuarioRouter.get('/info_usuario/:cpf',validarCpfMiddleware,infoUsuarioController);
+usuarioRouter.get('/info_usuario/:cpf',
+    validarCpfMiddleware,
+    infoUsuarioController
+);
 
 //rota para cadastrar cliente
 usuarioRouter.post('/cadastro', 
@@ -20,6 +30,23 @@ usuarioRouter.post('/cadastro',
     cadastroUsuarioController
 );
 
-//
+//rota para gerar token para recuperar senha
+usuarioRouter.post('/recuperar_senha/solicitar', 
+    validarCpfMiddleware,
+    recuperacaoSenhaSoliciarController
+);
+
+//rota para validar token de recuperação de senha
+usuarioRouter.post('/recuperar_senha/validar', 
+    validadorDadosMiddleware(recuperarSenhaValidarSchema),
+    recuperacaoSenhaValidarController
+);
+
+//rota atualizacao usuario
+usuarioRouter.post('/recuperar_senha/atualizar',
+    validarTokenMiddleware,
+    validadorDadosMiddleware(recuperarSenhaAtualizarSchema),
+    recuperacaoSenhaAtualizarController
+)
 
 export {usuarioRouter};

@@ -2,14 +2,13 @@ import  bcrypt  from  "bcrypt"
 import { DataSupabase } from "../../data-source"
 import { IUsuarioCriacao } from "../../interface/usuario.interface"
 import { AppError } from "../../error/appError"
+import { gerarSenhaHash } from "../../utils/gerarSenhaHash"
 import "dotenv/config"
 
 const cadastroUsuarioService = async (dados: IUsuarioCriacao): Promise<boolean> => {
-    const {cpf, cargo, cod_empresa, codigo_saib, senha, empresa, credito, nome , sobrenome, sexo } = dados;
+    const {cpf, cargo, cod_empresa, codigo_saib, whatsapp ,senha, empresa, credito, nome , sobrenome, sexo } = dados;
     
-    const numeroSalt = gerarSalt();
-    const salt = await bcrypt.genSalt(numeroSalt);
-    const senhaHash = await bcrypt.hash(senha + process.env.Bcrypt_Chave, salt)
+    const senhaHash = await gerarSenhaHash(senha)
 
     const {error, status} = await DataSupabase
             .from('usuario')
@@ -23,6 +22,7 @@ const cadastroUsuarioService = async (dados: IUsuarioCriacao): Promise<boolean> 
                 cod_empresa,
                 codigo_saib,
                 credito,
+                whatsapp,
                 senha: senhaHash
             })
 
@@ -39,10 +39,5 @@ const cadastroUsuarioService = async (dados: IUsuarioCriacao): Promise<boolean> 
 }
 
 
-const gerarSalt = () => {
-    const saltOpcoes = [8,10,12];
-    const indexAleatorio = Math.floor(Math.random() * saltOpcoes.length)
-    return saltOpcoes[indexAleatorio];
-}
 
 export {cadastroUsuarioService}
