@@ -9,6 +9,7 @@ interface IAutorizacaoResponse {
     cpf: string;
     nome: string;
     sobrenome: string;
+    whatsapp: string;
     sexo: string;
     cargo: string;
     empresa: string;
