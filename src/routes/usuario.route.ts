@@ -12,6 +12,10 @@ import {
 } from "../controllers/usuario/recuperacaoSenha.controller";
 import { recuperarSenhaAtualizarSchema, recuperarSenhaValidarSchema } from "../schema/usuario/recuperarSenha.schema";
 import { validarTokenMiddleware } from "../middlewares/validarToken.middleware";
+import { atualizarUsuarioSchema } from "../schema/usuario/atualizarUsuario.schema";
+import { validarExistenciaIdMiddleware } from "../middlewares/validarExistenciaId.middleware";
+import { validarControleAcessoMiddleware } from "../middlewares/validarControleAcesso.middleware";
+import { atualizarUsuarioController } from "../controllers/usuario/atualizarUsuario.controller";
 
 
 const usuarioRouter = Router();
@@ -42,11 +46,20 @@ usuarioRouter.post('/recuperar_senha/validar',
     recuperacaoSenhaValidarController
 );
 
-//rota atualizacao usuario
+//rota atualizacao senha do usuario na recuperacao de senha
 usuarioRouter.post('/recuperar_senha/atualizar',
     validarTokenMiddleware,
     validadorDadosMiddleware(recuperarSenhaAtualizarSchema),
     recuperacaoSenhaAtualizarController
+)
+
+//rota atualizacao  usuario 
+usuarioRouter.patch('/atualizar/:id',
+    validarTokenMiddleware,
+    validarExistenciaIdMiddleware,
+    validarControleAcessoMiddleware,
+    validadorDadosMiddleware(atualizarUsuarioSchema),
+    atualizarUsuarioController
 )
 
 export {usuarioRouter};
