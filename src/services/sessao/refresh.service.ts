@@ -25,7 +25,7 @@ const refreshService = async (token:string):Promise<IAutorizacaoResponse> => {
     }
 
     if(!usuario){
-        throw new AppError(`Refresh token não encontrado`, 403);
+        throw new AppError(`Esse token não pertence a nossa base de dados`, 403);
     }
 
     let novoTokenAcesso;
@@ -57,6 +57,7 @@ const refreshService = async (token:string):Promise<IAutorizacaoResponse> => {
         cod_empresa: usuario.cod_empresa,
         codigo_saib: usuario.codigo_saib,
         credito: usuario.credito,
+        admin: usuario.admin,
         token: novoTokenAcesso
     };
 
