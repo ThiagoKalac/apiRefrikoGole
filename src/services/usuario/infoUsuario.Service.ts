@@ -42,17 +42,17 @@ const infoUsuarioRh = async(cpf:string) => {
         26: 'refriko cascavel'
     }
 
-    console.log()
+    
     
     return {
         cpf: funcionario.cpf,
-        nome: funcionario.nome.split(" ")[0].toLocaleLowerCase(),
-        sobrenome:funcionario.nome.split(" ").slice(1).join(" ").toLocaleLowerCase(),
+        nome: funcionario.nome.split(" ")[0].toLowerCase(),
+        sobrenome:funcionario.nome.split(" ").slice(1).join(" ").toLowerCase(),
         sexo: funcionario.sexo == 'M' ? 'masculino' :  'feminino',
-        cargo: funcionario.cargoNome.toLocaleLowerCase(),
+        cargo: funcionario.cargoNome.toLowerCase(),
         empresa: empresaNome[parseInt(funcionario.id_empresa_saib)],
         cod_empresa : parseInt(funcionario.id_empresa_saib),
-        credito:  Number(parseFloat(funcionario.limiete).toFixed(2))
+        credito:  Number(parseFloat(funcionario.limite).toFixed(2))
     }  
     
 }
@@ -78,7 +78,7 @@ const infoUsuarioSaib = async (cpf, empId) => {
         .andWhere(`C.CLI_EMP_ID = :empId`, {empId: empId})
         .getRawMany()
 
-    if(respostaSaib.length == 0) throw new AppError(`Usuario não cadastrado na SAIB, solicitar a recepção pare realizar seu cadastro na empresa ${empId}! Depois tente novamente.`, 404);
+    if(respostaSaib.length == 0) throw new AppError(`Colaborador não cadastrado na SAIB, solicitar a recepção pare realizar seu cadastro na empresa ${empId}! Depois tente novamente.`, 404);
     
     const rotaPorEmpresa = {
         42: 603,
