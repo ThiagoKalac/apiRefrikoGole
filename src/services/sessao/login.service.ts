@@ -37,7 +37,7 @@ const loginService = async (dadosLogin:ILogin):Promise<IAutorizacaoResponse> => 
             admin: usuario.admin
         },
         process.env.SECRET_KEY,
-        {expiresIn: "10m", subject: usuario.id}
+        {expiresIn: "2h", subject: usuario.id}
     )
 
     const tokenRefresh = jwt.sign({admin: usuario.admin}, process.env.SECRET_KEY, {expiresIn: '7d' , subject: usuario.id})
@@ -60,11 +60,13 @@ const loginService = async (dadosLogin:ILogin):Promise<IAutorizacaoResponse> => 
         sexo: usuario.sexo,
         nome: usuario.nome,
         sobrenome: usuario.sobrenome,
+        whatsapp: usuario.whatsapp,
         cargo: usuario.cargo,
         empresa: usuario.empresa,
         cod_empresa: usuario.cod_empresa,
         codigo_saib: usuario.codigo_saib,
         credito: usuario.credito,
+        admin: usuario.admin
     }
 }
 
