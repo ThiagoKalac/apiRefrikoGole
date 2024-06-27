@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { validadorDadosMiddleware } from "../middlewares/validadorDados.middleware";
-import { infoUsuarioController } from "../controllers/usuario/infoUsuario.controller";
+
 import { validarCpfMiddleware } from "../middlewares/validarCpf.middleware";
 import { cadastroUsuarioSchema } from "../schema/usuario/cadastroUsuario.schema";
 import { cadastroUsuarioController } from "../controllers/usuario/cadastroUsuario.controller";
@@ -16,6 +16,8 @@ import { atualizarUsuarioSchema } from "../schema/usuario/atualizarUsuario.schem
 import { validarExistenciaIdMiddleware } from "../middlewares/validarExistenciaId.middleware";
 import { validarControleAcessoMiddleware } from "../middlewares/validarControleAcesso.middleware";
 import { atualizarUsuarioController } from "../controllers/usuario/atualizarUsuario.controller";
+import { infoUsuarioController } from "../controllers/usuario/infoUsuario.controller";
+
 
 
 const usuarioRouter = Router();
