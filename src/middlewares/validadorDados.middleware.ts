@@ -5,7 +5,8 @@ const validadorDadosMiddleware = (schema: AnySchema) =>async (req:Request, res: 
     try{
         const validado = await schema.validate(req.body, {
             stripUnknown: true,
-            abortEarly: false
+            abortEarly: false,
+            strict: true
         })
         
         req.body = validado
