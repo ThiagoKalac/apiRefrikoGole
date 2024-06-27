@@ -8,7 +8,7 @@ const validarTokenMiddleware = async (req: Request, res:Response, next:NextFunct
 
     if(!token){
         return res.status(403).json({
-            message: "Necessário um token de acesso"
+            mensagem: "Necessário um token de acesso"
         })
     }
 
@@ -17,9 +17,9 @@ const validarTokenMiddleware = async (req: Request, res:Response, next:NextFunct
     jwt.verify(token, process.env.SECRET_KEY, async (error:VerifyErrors | null, decode: any) => {
         if(error){
             if(error.name === "TokenExpiredError"){
-                res.status(401).json({ message: 'Token Expirado' });
+                res.status(401).json({ mensagem: 'Token Expirado' });
             }else {
-                res.status(403).json({ message: 'Token invalido' });
+                res.status(403).json({ mensagem: 'Token invalido' });
             }
         }else{
             req.usuario = {
