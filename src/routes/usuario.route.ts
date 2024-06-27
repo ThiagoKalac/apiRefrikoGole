@@ -20,6 +20,7 @@ import { infoUsuarioController } from "../controllers/usuario/infoUsuario.contro
 
 
 
+
 const usuarioRouter = Router();
 
 //rota para trazer informações do usuario na SENIOR e SAIB
