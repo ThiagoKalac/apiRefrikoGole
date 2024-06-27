@@ -3,6 +3,10 @@ import { infoProdutoController } from "../controllers/produto/infoProduto.contro
 import { validarTokenMiddleware } from "../middlewares/validarToken.middleware";
 import { validarAdminMiddleware } from "../middlewares/validarAdmin.middeware";
 import { validarProdutoExistenteMiddleware } from "../middlewares/validarProdutoExistente.middleware";
+import { validarProdutoCadastradoMiddleware } from "../middlewares/validarProdutoCadastrado.middleware";
+import { atualizarProdutoController } from "../controllers/produto/atualizarProduto.controller";
+import { validadorDadosMiddleware } from "../middlewares/validadorDados.middleware";
+import { atualizarProdutoSchema } from "../schema/produto/atualizar.schema";
 
 const produtoRouter = Router();
 
@@ -14,8 +18,13 @@ produtoRouter.get('/info_produto/:codigo',
     infoProdutoController
 );
 
-produtoRouter.get('/atualizar/:codigo'
-    
+//atualizar produto
+produtoRouter.post('/atualizar/:codigo',
+    validarTokenMiddleware, 
+    validarAdminMiddleware,
+    validarProdutoCadastradoMiddleware,
+    validadorDadosMiddleware(atualizarProdutoSchema),
+    atualizarProdutoController
 )
 
 export {produtoRouter};
