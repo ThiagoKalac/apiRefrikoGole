@@ -36,4 +36,12 @@ interface IProdutoRespFormatada {
     empresas: IEmpresaProduto[];
 }
 
-export {IProdutoSaibResp, IProdutoRespFormatada, IEmpresaProduto};
+interface IProdutoAtualizar {
+    nome?: string;
+    rotulo?: string;
+    teor_alcoolico?: string;
+    pais_fabricacao?:string;
+    urlFoto?:string;
+}
+
+export {IProdutoSaibResp, IProdutoRespFormatada, IEmpresaProduto, IProdutoAtualizar};

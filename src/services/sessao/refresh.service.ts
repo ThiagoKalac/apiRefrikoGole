@@ -39,7 +39,7 @@ const refreshService = async (token:string):Promise<IAutorizacaoResponse> => {
                 admin: decode.admin
             },
             process.env.SECRET_KEY as jwt.Secret,
-            { expiresIn: "2h", subject: idUsuario as string }
+            { expiresIn: "5h", subject: idUsuario as string }
         );
 
     })
