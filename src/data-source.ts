@@ -1,7 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 import { DataSource } from "typeorm";
 import { Funcionarios } from "./entity/Funcionarios";
-import path from "path"
 import "dotenv/config"
 
 const DataSourceOracle = new DataSource({
