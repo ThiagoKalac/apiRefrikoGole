@@ -12,14 +12,16 @@ RUN yarn install
 
 # Instale as dependências necessárias para o Oracle Instant Client
 RUN apt-get update && \
-    apt-get install -y libaio1 wget unzip
-
-# Baixe e instale o Oracle Instant Client
-RUN wget https://download.oracle.com/otn_software/linux/instantclient/instantclient-basic-linux.x64-19.8.0.0.0dbru.zip && \
+    apt-get install -y libaio1 wget unzip && \
+    wget https://download.oracle.com/otn_software/linux/instantclient/instantclient-basic-linux.x64-19.8.0.0.0dbru.zip && \
     unzip instantclient-basic-linux.x64-19.8.0.0.0dbru.zip && \
-    mkdir -p /opt/oracle && \
-    mv instantclient_19_8 /opt/oracle/instantclient && \
-    rm instantclient-basic-linux.x64-19.8.0.0.0dbru.zip
+    mkdir -p /opt/oracle/instantclient && \
+    mv instantclient_19_8/* /opt/oracle/instantclient/ && \
+    rm -rf instantclient_19_8 instantclient-basic-linux.x64-19.8.0.0.0dbru.zip && \
+    echo /opt/oracle/instantclient > /etc/ld.so.conf.d/oracle-instantclient.conf && \
+    ldconfig && \
+    ls -l /opt/oracle/instantclient && \
+    echo $LD_LIBRARY_PATH
 
 # Configure o Oracle Instant Client
 ENV LD_LIBRARY_PATH /opt/oracle/instantclient:$LD_LIBRARY_PATH
