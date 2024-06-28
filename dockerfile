@@ -3,17 +3,18 @@ FROM node:20.11.0
 
 # Copie o Oracle Instant Client para o contêiner
 COPY ./client-oracle/instantclient-basic-linux.x64-12.2.0.1.0.zip /tmp/
+
 # Instale as dependências necessárias para o Oracle Instant Client
 RUN apt-get update && \
     apt-get install -y libaio1 unzip && \
-    unzip /tmp/instantclient-basic-linux.x64-12.2.0.1.0.zip -d /opt/oracle/instantclient && \
+    unzip /tmp/instantclient-basic-linux.x64-12.2.0.1.0.zip -d /opt/oracle && \
     rm -f /tmp/instantclient-basic-linux.x64-12.2.0.1.0.zip && \
-    echo /opt/oracle/instantclient > /etc/ld.so.conf.d/oracle-instantclient.conf && \
+    echo /opt/oracle/instantclient_12_2 > /etc/ld.so.conf.d/oracle-instantclient.conf && \
     ldconfig
 
 # Configure as variáveis de ambiente para o Oracle Instant Client
-ENV LD_LIBRARY_PATH=/opt/oracle/instantclient:$LD_LIBRARY_PATH
-ENV ORACLE_HOME=/opt/oracle/instantclient
+ENV LD_LIBRARY_PATH=/opt/oracle/instantclient_12_2:$LD_LIBRARY_PATH
+ENV PATH=/opt/oracle/instantclient_12_2:$PATH
 
 
 # Defina o diretório de trabalho da aplicação
