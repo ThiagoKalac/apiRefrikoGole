@@ -10,11 +10,14 @@ RUN apt-get update && \
     unzip /tmp/instantclient-basic-linux.x64-12.2.0.1.0.zip -d /opt/oracle && \
     rm -f /tmp/instantclient-basic-linux.x64-12.2.0.1.0.zip && \
     echo /opt/oracle/instantclient_12_2 > /etc/ld.so.conf.d/oracle-instantclient.conf && \
-    ldconfig
+    ldconfig && \
+    ln -s /opt/oracle/instantclient_12_2/libclntsh.so /usr/lib/libclntsh.so && \
+    ln -s /opt/oracle/instantclient_12_2/libocci.so /usr/lib/libocci.so
 
 # Configure as variáveis de ambiente para o Oracle Instant Client
 ENV LD_LIBRARY_PATH=/opt/oracle/instantclient_12_2:$LD_LIBRARY_PATH
 ENV PATH=/opt/oracle/instantclient_12_2:$PATH
+ENV TNS_ADMIN=/opt/oracle/instantclient_12_2/network/admin
 
 
 # Defina o diretório de trabalho da aplicação
