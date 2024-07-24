@@ -12,24 +12,23 @@ const atualizarUsuarioService = async (id:string, dados:IUsuarioAtualizacao) => 
     }
 
 
-    const {data:usuarioAtualizado, error} = await DataSupabase
+    const {data:usuario, error} = await DataSupabase
         .from('usuario')
         .update({
             ...dadosAtualizar,
             atualizado_em: new Date()
         })
         .eq('id', id)
-        .select('id, nome, sobrenome, sexo, whatsapp, cpf')
+        .select('*')
         .single()
         
     if (error) {
         throw new AppError(`Erro ao atualizar usuário: ${error.message}`,500);
     }
-    
-    console.log('ola')
-    console.log(usuarioAtualizado)
 
-    return usuarioAtualizado
+    const {atualizado_em, token_recuperacao, senha, criado_em, ...usuarioAtualizado} = usuario;
+    
+    return usuarioAtualizado;
 
 }
 

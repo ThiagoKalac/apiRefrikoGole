@@ -1,7 +1,7 @@
 FROM node:20.11.0
 
 # Copie o Oracle Instant Client para o contêiner
-COPY ./client-oracle/oracle.rar /tmp/oracle.rar
+COPY ./client-oracle/instantclient-basic-linux.x64-12.2.0.1.0.zip /tmp/oracle.zip
 
 # Instale as dependências necessárias e descompacte o Oracle Instant Client
 RUN apt-get update && \
