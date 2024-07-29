@@ -10,13 +10,15 @@ const criarPedidoService = async (dadosPedidos: ICriarPedidoRequest) => {
     const { dataInicio, dataFim, cod_empresa } = dadosPedidos;
 
     // formatando as datas para puxar os pedidos
-    const dataSupabaseInicio = FormatadorDeData.converterData(dataInicio, 'supabase', 'Inicio');
-    const dataSupabaseFim = FormatadorDeData.converterData(dataFim, 'supabase', 'Fim');
-    const dataPedidoOracle = FormatadorDeData.formatarData(new Date(), 'dd/mm/aaaa');
+    const dataSupabaseInicio = FormatadorDeData.converterData(dataInicio, 'supabase', 'inicio');
+    const dataFiltroInicio = FormatadorDeData.subtrairUmDia(dataSupabaseInicio.toString())
+    const dataFiltroFim = FormatadorDeData.converterData(dataFim, 'supabase', 'fim');
+    const dataPedidoOracle = FormatadorDeData.formatarData(new Date(), 'dd/mm/aaaa'); // data atual
     
+   
+    // quantificar quantos pedidos foram gerados
     let quantidadePedidos;
     
-
     // fazendo a query no supabase na tabela "pedidos", fazendo inner join nas tabelas "usuario","pedido_produtos" e "produto"
     const { data, error } = await DataSupabase
         .from("pedidos")
@@ -35,15 +37,15 @@ const criarPedidoService = async (dadosPedidos: ICriarPedidoRequest) => {
                 )
             )
         `)
-        .neq('ped_status', 'Cancelado')
         .eq('ped_status','Pendente')
-        .gte('ped_data', dataSupabaseInicio)
-        .lte('ped_data', dataSupabaseFim)
+        .gte('ped_data', dataFiltroInicio)
+        .lte('ped_data', dataFiltroFim)
         .eq('usuario.cod_empresa', cod_empresa);
     
     const pedidos = data as IPedidosSupabase[];
 
     if (error) {
+        console.log(error)
         throw new AppError('Erro ao buscar pedidos: ' + error.message);
     }
 
@@ -64,7 +66,7 @@ const criarPedidoService = async (dadosPedidos: ICriarPedidoRequest) => {
             //descontrução das infomrações do pedido
             const { id, ped_data, ped_valor_total, ped_usr_cod_saib, pedido_produtos } = pedido;
             const numeroPedidoSaib = 90000000 + id;
-            const dataPedidoConvertida = FormatadorDeData.converterData(ped_data, 'oracle', 'data pedido saib');
+            const dataPedidoConvertida = FormatadorDeData.converterData(ped_data, 'oracle');
 
             //criando sql de inserção do novo pedido
             const insertPedidoSql = `
@@ -75,6 +77,7 @@ const criarPedidoService = async (dadosPedidos: ICriarPedidoRequest) => {
                     PEDC_EMP_ID,  -- codigo da empresa
                     PEDC_DTA_VIS, -- data do pedido
                     PEDC_NR_PEDIDO, -- numero do pedido, numero fixo de 90 Milhões mais o ID gerado no supabase, para gerar um pedido FIXO
+                    PEDC_NR_PED_PORTAL, -- numero do pedido, igual da coluna de cima
                     PEDC_GEN_ID_CIDADE_DE, -- cidade do cliente
                     PEDC_GEN_TGEN_ID_CIDADE_DE, -- cod da cidade generica
                     PEDC_GEN_EMP_ID_CIDADE_DE, -- Empresa da cidade, manter 0
@@ -110,6 +113,7 @@ const criarPedidoService = async (dadosPedidos: ICriarPedidoRequest) => {
                     ${cod_empresa}, -- codigo da empresa
                     TRUNC(SYSDATE), -- data do pedido
                     ${numeroPedidoSaib}, -- numero do pedido, numero fixo de 90 Milhões mais o ID gerado no supabase, para gerar um pedido FIXO
+                    ${numeroPedidoSaib}, -- numero do pedido, igual da coluna de cima
                     ${cidadeFuncionario(cod_empresa)}, -- cidade do cliente
                     5001, -- cod da cidade generica 
                     0, -- Empresa da cidade, manter 0
@@ -154,8 +158,7 @@ const criarPedidoService = async (dadosPedidos: ICriarPedidoRequest) => {
                 // pegando a data de vigencia do produto
                 const dataVigencia = await ProdutoServico.buscarDataVigenciaProduto(id_produto,cod_empresa);
                 const dataVigenciaConvertida = FormatadorDeData.formatarData(new Date(dataVigencia), 'dd/mm/aaaa')
-                console.log(dataVigencia)
-                console.log(dataVigenciaConvertida)
+          
                 //criando sql de inserção do produto
                 const insertProdutosSql = `
                     INSERT INTO SAIB2000.PEDIDO_COL_P(

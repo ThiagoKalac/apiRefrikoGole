@@ -3,10 +3,11 @@ import { criarPedidoService } from "../../services/pedido/criarPedido.service";
 import { ICriarPedidoRequest } from "../../interface/pedido.interface";
 
 
+
 const criarPedidoController = async (req:Request, res:Response) => {
     const dadosPedidos:ICriarPedidoRequest = req.body
     const resp = await criarPedidoService(dadosPedidos);
-    return res.status(201).json(resp);
+    return res.status(201).json({mensagem: resp});
 }
 
 export {criarPedidoController};
