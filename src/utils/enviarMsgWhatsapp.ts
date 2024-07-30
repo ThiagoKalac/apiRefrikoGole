@@ -108,12 +108,12 @@ class Mensageiro {
         }
         
         let mensagem = `Olá *${this.usuario}* 😊, como está você?,\n\n Aqui é a equipe da *Refriko Gole* 🍹 e aqui está o comprovante do seu pedido:\n\n`;
-        mensagem += `*Pedido:* ${this.idPedido}\n*Valor do Pedido:* R$${this.valorPedido}\n*Status:*Pendente\n*Faturamento previsto:*${this.dataFaturamento}:\n\n`;
+        mensagem += `*Pedido:* ${this.idPedido}\n*Valor do Pedido:* R$${this.valorPedido}\n*Status:* Pendente\n*Faturamento previsto:* ${this.dataFaturamento}:\n\n`;
         mensagem += `🍻 Produtos:\n`
         this.listaProdutos.forEach(produto => {
             mensagem += `- *${produto.nome_produto}* - *qtd*:${produto.qtd} - *valor*:R$${produto.valor_uni} - *total*: R$${produto.valor_total}\n`;
         });
-        mensagem += `\n\n ⚠️*AVISO IMPORTANTE* ⚠️!\n\n`;
+        mensagem += `\n\n ⚠️ *AVISO IMPORTANTE* ⚠️!\n\n`;
         mensagem += `> _O faturamento do seu pedido será submetido a uma análise de estoque e, caso algum item não esteja disponível, o pedido poderá ser cancelado. No entanto, fique tranquilo, você será notificado._\n\n`;
         mensagem += `📃 _Você pode acompanhar o status do seu pedido na seção *"Meus Pedidos"* do menu._\n\n`
         mensagem += `😄 *Obrigado por comprar conosco!.*\n`

@@ -3,7 +3,7 @@ import { Mensageiro } from "../../utils/enviarMsgWhatsapp";
 
 
 const enviarComprovanteService = async (dadosMsg:IComprovante) => {
-    console.log(dadosMsg)
+    
     const {idPedido, valorPedido, produtos, whatsapp, usuario,dataFaturamento} = dadosMsg;
     
     // Cria uma instância do Mensageiro
