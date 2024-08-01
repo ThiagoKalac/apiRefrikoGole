@@ -31,7 +31,7 @@ class FormatadorDeData {
             } else if (tipoConversao === 'fim') {
                 novaData.setHours(13, 0, 0, 0); // 13:00:00
             }
-            // return this.formatarData(novaData, 'aaaa-mm-dd HH:MM:SS.SSSSSS+00');
+           
             return novaData.toISOString()
             
         } else {

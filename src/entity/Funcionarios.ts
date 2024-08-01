@@ -64,5 +64,8 @@ export class Funcionarios {
   limite: string | null;
 
   @UpdateDateColumn()
-  updated_at: Date
+  updated_at: Date;
+
+  @Column("boolean", {name:"salario_alterado",default: false})
+  salario_alterado: boolean;
 }
