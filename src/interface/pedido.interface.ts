@@ -2,7 +2,20 @@ interface ICriarPedidoRequest{
     dataInicio: string;
     dataFim: string;
     cod_empresa: number;
+    uuidUsuario: string;
 } 
+
+interface IPedidoCriado{
+    cod_saib: number,
+    nome: string,
+    pedido_saib: number,
+    pedido_app: number
+}
+
+interface IRetornoPedidoCriado {
+    quantidade: number,
+    pedidos: IPedidoCriado[]
+}
 
 interface IUsuario {
     nome: string;
@@ -41,7 +54,7 @@ interface IPedidosSupabase {
     pedido_produtos: IPedidoProduto[];
 }
 
-export {ICriarPedidoRequest, IPedidosSupabase};
+export {ICriarPedidoRequest, IPedidosSupabase, IRetornoPedidoCriado, IPedidoCriado};
 
 
 

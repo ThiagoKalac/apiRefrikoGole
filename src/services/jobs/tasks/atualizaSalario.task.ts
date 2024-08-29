@@ -2,6 +2,8 @@ import cron from 'node-cron';
 import { DataSourcePostGree, DataSupabase } from '../../../data-source';
 import { Funcionarios } from '../../../entity/Funcionarios';
 import { AppError } from '../../../error/appError';
+import { Logging } from '../../../log/loggin';
+import { tipoLog } from '../../../interface/log.interface';
 
 class AtulizarSalario {
     private static async executar(): Promise<void>{
@@ -30,10 +32,29 @@ class AtulizarSalario {
                         throw new AppError('Erro para buscar Id do usuario || AtualizarSalario.executar', 500)
                     }
                 }
+
+                Logging.registrarLog({
+                    mensagem: 'Salario(s) atualizado com sucesso',
+                    stack_trace: null,
+                    usuario: null,
+                    stack: 'back-end',
+                    dados_adicionais: `Atualizados dos usuários: ${listaUsuarios.map(elt => elt.nome).join(', ')}`,
+                    tipo_log: tipoLog.INFO
+                })
             }
 
         } catch (error) {
             console.error('Erro ao executar a restauração de crédito mensal:', error);
+
+            Logging.registrarLog({
+                mensagem: "Erro ao executar a atualização de salário",
+                stack_trace: Logging.formatarObjStackTraceErro(error),
+                usuario: null,
+                stack: "back-end",
+                dados_adicionais: 'cron job/services/jobs/tasks/atualizarSalario',
+                tipo_log: tipoLog.ERRO
+            });
+
             throw new AppError(`Erro linha 46 | tarefa AtulizarSalario ${error}`,500)
         }
     }
@@ -41,6 +62,17 @@ class AtulizarSalario {
     private static async usuariosSenior():Promise<Funcionarios[]>{
         const funcionariosRepositorio = DataSourcePostGree.getRepository(Funcionarios);
         const listaFuncionario = await funcionariosRepositorio.find()
+
+        // Log de consulta de funcionários
+        Logging.registrarLog({
+            mensagem: "Consulta de todos os funcionários realizada",
+            stack_trace: null,
+            usuario: null,
+            stack: "back-end",
+            dados_adicionais: `Total de funcionários consultados: ${listaFuncionario.length}`,
+            tipo_log: tipoLog.INFO
+        });
+
         return listaFuncionario;
     }
 

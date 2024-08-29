@@ -1,13 +1,15 @@
 import { QueryRunner } from "typeorm";
 import { DataSourceOracle, DataSupabase } from "../../data-source";
 import { AppError } from "../../error/appError";
-import { ICriarPedidoRequest, IPedidosSupabase } from "../../interface/pedido.interface";
+import { ICriarPedidoRequest, IPedidoCriado, IPedidosSupabase, IRetornoPedidoCriado } from "../../interface/pedido.interface";
 import { FormatadorDeData } from "../../utils/formatadorDeData";
 import { ProdutoServico } from "../../utils/buscarProdutoSaib";
+import { Logging } from "../../log/loggin";
+import { tipoLog } from "../../interface/log.interface";
 
-const criarPedidoService = async (dadosPedidos: ICriarPedidoRequest) => {
+const criarPedidoService = async (dadosPedidos: ICriarPedidoRequest):Promise<IRetornoPedidoCriado> => {
     // desconstrução dos dados para extrair os pedidos do supabase
-    const { dataInicio, dataFim, cod_empresa } = dadosPedidos;
+    const { dataInicio, dataFim, cod_empresa, uuidUsuario } = dadosPedidos;
 
     // formatando as datas para puxar os pedidos
     const dataSupabaseInicio = FormatadorDeData.converterData(dataInicio, 'supabase', 'inicio');
@@ -16,8 +18,9 @@ const criarPedidoService = async (dadosPedidos: ICriarPedidoRequest) => {
     const dataPedidoOracle = FormatadorDeData.formatarData(new Date(), 'dd/mm/aaaa'); // data atual
     
    
-    // quantificar quantos pedidos foram gerados
-    let quantidadePedidos;
+    // quantificar quantos pedidos foram gerados e os pedidos que vão ser criados;
+    let quantidadePedidos:number;
+    let pedidosCriados: IPedidoCriado[] = [];
     
     // fazendo a query no supabase na tabela "pedidos", fazendo inner join nas tabelas "usuario","pedido_produtos" e "produto"
     const { data, error } = await DataSupabase
@@ -41,9 +44,9 @@ const criarPedidoService = async (dadosPedidos: ICriarPedidoRequest) => {
         .gte('ped_data', dataFiltroInicio)
         .lte('ped_data', dataFiltroFim)
         .eq('usuario.cod_empresa', cod_empresa);
-    
-    const pedidos = data as IPedidosSupabase[];
 
+    const pedidos = data as IPedidosSupabase[];
+         
     if (error) {
         console.log(error)
         throw new AppError('Erro ao buscar pedidos: ' + error.message);
@@ -52,6 +55,15 @@ const criarPedidoService = async (dadosPedidos: ICriarPedidoRequest) => {
     quantidadePedidos = pedidos.length;
 
     if (quantidadePedidos === 0) {
+        Logging.registrarLog({
+            mensagem: 'Sem pedidos para inserir no SAIB',
+            stack_trace: null,
+            usuario: uuidUsuario,
+            stack: 'back-end',
+            dados_adicionais: `Pedidos filtrados na data de ${dataInicio} à data de ${dataFim}`,
+            tipo_log: tipoLog.INFO
+        });
+
         throw new AppError('Não tem pedidos para serem gerados no período selecionado', 200);
     }
 
@@ -144,7 +156,7 @@ const criarPedidoService = async (dadosPedidos: ICriarPedidoRequest) => {
                 )
             `;
             
-            //executa a query, mas não persiste no banco.    
+            // executa a query, mas não persiste no banco.    
             await queryRunner.query(insertPedidoSql);
             
             //ID sequencial de acordo com o numero de produtos, começando em 0 
@@ -177,7 +189,7 @@ const criarPedidoService = async (dadosPedidos: ICriarPedidoRequest) => {
                         PEDC_PROD_EMP_ID,  -- CODIGO DA EMPRESA    
                         PEDC_PROD_ID,    -- CODIGO DO PRODUTO  
                         PEDC_OPERC_EMP_ID,   -- CODIGO DA EMPRESA   
-                        PEDC_OPERC_ID,     -- CODIGO DA OPERAÇÃO, DEIXAR 1
+                        PEDC_OPERC_ID,     -- 1551
                         PEDC_TPRC_EMP_ID,  -- CODIGO DA EMPRESA (TRAZER ESSAS DADOS DA TABELA DE PREÇO)
                         PEDC_TPRC_GEN_TGEN_ID,  -- DEIXAR 902 (TRAZER ESSAS DADOS DA TABELA DE PREÇO)
                         PEDC_TPRC_GEN_EMP_ID,   -- CODIGO DA EMPRESA (TRAZER ESSAS DADOS DA TABELA DE PREÇO)
@@ -206,7 +218,7 @@ const criarPedidoService = async (dadosPedidos: ICriarPedidoRequest) => {
                         ${cod_empresa},  -- CODIGO DA EMPRESA    
                         ${id_produto},    -- CODIGO DO PRODUTO  
                         ${cod_empresa},   -- CODIGO DA EMPRESA   
-                        1,     -- CODIGO DA OPERAÇÃO, DEIXAR 1
+                        ${codigoDaOperacao(cod_empresa)},     -- CODIGO DA OPERAÇÃO, DEIXAR 1
                         ${cod_empresa},  -- CODIGO DA EMPRESA (TRAZER ESSAS DADOS DA TABELA DE PREÇO)
                         902,  -- DEIXAR 902 (TRAZER ESSAS DADOS DA TABELA DE PREÇO)
                         ${cod_empresa},   -- CODIGO DA EMPRESA (TRAZER ESSAS DADOS DA TABELA DE PREÇO)
@@ -240,22 +252,50 @@ const criarPedidoService = async (dadosPedidos: ICriarPedidoRequest) => {
                 throw new AppError('Linha 236 | Erro ao atualizar pedidos: ' + pedidoAtualizadoError.message);
             }
 
+            // salvando os pedidos criados para retornar na api os pedidos criados
+            pedidosCriados.push({
+                cod_saib: ped_usr_cod_saib,
+                nome: `${pedido.usuario.nome} ${pedido.usuario.sobrenome}`,
+                pedido_app: id,
+                pedido_saib: numeroPedidoSaib
+            })
+
         }
 
         //salvando todas as alterações no banco, persistindo todas elas.
         await queryRunner.commitTransaction();
 
+        //loggin de sucesso
+        Logging.registrarLog({
+            mensagem: 'Pedidos inseridos no SAIB',
+            stack_trace: null,
+            usuario: uuidUsuario,
+            stack: 'back-end',
+            dados_adicionais: `Total de pedidos registrados: ${quantidadePedidos}, Pedidos puxados na data de ${dataInicio} à data de ${dataFim}`,
+            tipo_log: tipoLog.INFO
+        });
         
     } catch (error) {
         await queryRunner.rollbackTransaction();
         console.error(error);
+        
+        // Log de erro
+        Logging.registrarLog({
+            mensagem: 'Erro na inserção dos pedidos no saib, rollback realizado',
+            stack_trace: Logging.formatarObjStackTraceErro(error),
+            usuario: uuidUsuario,
+            stack: 'back-end',
+            dados_adicionais: null,
+            tipo_log: tipoLog.ERRO
+        });
+
         throw new AppError('Nenhum pedido foi gerado, devido ao erro: ' + error.message, 404);
     } finally {
         // fechar conexao
         await queryRunner.release();
     }
 
-    return `Foi registrado ${quantidadePedidos} pedidos`;
+    return {quantidade: quantidadePedidos, pedidos: pedidosCriados};
 };
 
 const rotaFuncionario = (idEmpresa: number): number => {
@@ -279,6 +319,19 @@ const cidadeFuncionario = (idEmpresa: number): number => {
     };
     return cidadePorEmpresa[idEmpresa];
 };
+
+const codigoDaOperacao = (idEmpresa:number):number => {
+
+    const codOperacaoPorEmpresa ={
+        22: 851,
+        26: 851,
+        124: 851,
+        42: 1,
+        43: 1
+    }
+
+    return codOperacaoPorEmpresa[idEmpresa];
+}
 
 export { criarPedidoService };
 

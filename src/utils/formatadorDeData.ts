@@ -32,7 +32,7 @@ class FormatadorDeData {
                 novaData.setHours(13, 0, 0, 0); // 13:00:00
             }
            
-            return novaData.toISOString()
+            return new Date(novaData.getTime() - novaData.getTimezoneOffset() * 60000).toISOString();
             
         } else {
             throw new AppError(`Banco de dados ${bancoDeDados} não suportado`,404);

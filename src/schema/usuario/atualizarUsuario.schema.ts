@@ -15,6 +15,7 @@ const atualizarUsuarioSchema: yup.ObjectSchema<IUsuarioAtualizacao> = yup.object
     confirma_senha: yup.string()
           .oneOf([yup.ref('senha'), null], 'As senhas devem coincidir')
           .notRequired(),
+    perfil: yup.string().notRequired()
 });
 
 
