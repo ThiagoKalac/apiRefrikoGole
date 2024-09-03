@@ -8,13 +8,17 @@ const cadastroUsuarioSchema: yup.ObjectSchema<IUsuarioCriacao> = yup.object().sh
     sexo: yup.string().oneOf(['masculino', 'feminino'], 'Sexo inválido').required('sexo: é obrigatório'),
     cargo: yup.string().required('cargo: é obrigatório'),
     empresa: yup.string().required('empresa: é obrigatório'),
+    whatsapp: yup.string()
+      .min(14,'Numero Invalido, passar numero nesse formato ex: +5511999991111')
+      .max(14,'Numero Invalido, passar numero nesse formato ex: +5511999991111')
+      .required('whatsapp: é obrigatório'),
     cod_empresa: yup.number().required("cod_empresa:  é obrigatório"),
     credito: yup.number().required("credito:  é obrigatório"),
     codigo_saib: yup.number().required("codigo_saib: é obrigatório"),
     senha: yup.string().min(5, 'A senha deve ter pelo menos 5 caracteres').required('senha: é obrigatória'),
     confirma_senha: yup.string()
       .oneOf([yup.ref('senha'), null], 'As senhas devem coincidir')
-      .required('confirma_senha: é obrigatória'),
+      .required('confirma_senha: é obrigatória')
 });
 
 export {cadastroUsuarioSchema};

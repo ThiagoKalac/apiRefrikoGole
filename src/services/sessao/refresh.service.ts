@@ -25,7 +25,7 @@ const refreshService = async (token:string):Promise<IAutorizacaoResponse> => {
     }
 
     if(!usuario){
-        throw new AppError(`Refresh token não encontrado`, 403);
+        throw new AppError(`Esse token não pertence a nossa base de dados`, 403);
     }
 
     let novoTokenAcesso;
@@ -39,7 +39,7 @@ const refreshService = async (token:string):Promise<IAutorizacaoResponse> => {
                 admin: decode.admin
             },
             process.env.SECRET_KEY as jwt.Secret,
-            { expiresIn: "10m", subject: idUsuario as string }
+            { expiresIn: "5h", subject: idUsuario as string }
         );
 
     })
@@ -51,12 +51,15 @@ const refreshService = async (token:string):Promise<IAutorizacaoResponse> => {
         sexo: usuario.sexo,
         nome: usuario.nome,
         sobrenome: usuario.sobrenome,
+        whatsapp: usuario.whatsapp,
         cargo: usuario.cargo,
         empresa: usuario.empresa,
         cod_empresa: usuario.cod_empresa,
         codigo_saib: usuario.codigo_saib,
         credito: usuario.credito,
-        token: novoTokenAcesso
+        admin: usuario.admin,
+        token: novoTokenAcesso,
+        perfil: usuario.perfil
     };
 
 }

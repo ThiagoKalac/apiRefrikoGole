@@ -1,7 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 import { DataSource } from "typeorm";
 import { Funcionarios } from "./entity/Funcionarios";
-import path from "path"
 import "dotenv/config"
 
 const DataSourceOracle = new DataSource({
@@ -12,7 +11,7 @@ const DataSourceOracle = new DataSource({
     password: process.env.ORACLE_PASSWORD,
     sid: process.env.ORACLE_DATABASE,
     synchronize: true,
-    logging: ["error"],
+    logging: ["error"]
 })
 //path.join(__dirname + "/entity/*{.js,.ts}"), 
 

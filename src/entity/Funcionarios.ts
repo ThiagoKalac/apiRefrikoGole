@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity("FUNCIONARIOS", { schema: "PBI" })
 export class Funcionarios {
@@ -61,5 +61,11 @@ export class Funcionarios {
     precision: 21,
     scale: 4,
   })
-  limiete: string | null;
+  limite: string | null;
+
+  @UpdateDateColumn()
+  updated_at: Date;
+
+  @Column("boolean", {name:"salario_alterado",default: false})
+  salario_alterado: boolean;
 }
