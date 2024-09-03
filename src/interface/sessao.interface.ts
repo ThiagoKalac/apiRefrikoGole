@@ -17,6 +17,7 @@ interface IAutorizacaoResponse {
     credito: number;
     codigo_saib: number;
     admin:boolean;
+    perfil: string | null;
 }
 
 export {ILogin, IAutorizacaoResponse}

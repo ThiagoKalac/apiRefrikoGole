@@ -14,7 +14,7 @@ const validadorDadosMiddleware = (schema: AnySchema) =>async (req:Request, res: 
 
     }catch (error){
         return res.status(400).json({
-            message: error.errors
+            mensagem: error.errors
         })
     }
 }

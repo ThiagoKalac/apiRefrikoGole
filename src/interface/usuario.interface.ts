@@ -16,11 +16,12 @@ interface IUsuario{
   codigo_saib: number;
   criado_em: Date;
   atualizado_em: Date | null;
+  perfil: string | null;
 }
 
 type IUsuarioCPF = Pick<IUsuario, 'cpf'>;
   
-interface IUsuarioCriacao extends Omit<IUsuario, 'id' | 'admin' | 'token' |'criado_em'| 'atualizado_em' | 'token_recuperacao'> {
+interface IUsuarioCriacao extends Omit<IUsuario, 'id' | 'admin' | 'token' |'criado_em'| 'atualizado_em' | 'token_recuperacao' | 'perfil'> {
   confirma_senha: string;
 }
 
@@ -33,6 +34,7 @@ interface IUsuarioAtualizacao {
   confirma_senha?: string;
   senha?: string;
   sexo?: string;
+  perfil?: string;
 }
 
 interface IUsuarioValidarRecuperacaoSenha {

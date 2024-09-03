@@ -27,8 +27,8 @@ import { app } from "./app"
     try{
         await DataSourcePostGree.initialize()
 
-        app.listen(3000, () => {
-            console.log(`Servidor executando na porta ${3000}`)
+        app.listen(2000,'0.0.0.0',() => {
+            console.log(`Servidor executando na porta ${2000}`)
         }) 
 
     }catch(error){

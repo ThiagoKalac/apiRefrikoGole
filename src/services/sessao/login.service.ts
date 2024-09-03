@@ -66,7 +66,8 @@ const loginService = async (dadosLogin:ILogin):Promise<IAutorizacaoResponse> => 
         cod_empresa: usuario.cod_empresa,
         codigo_saib: usuario.codigo_saib,
         credito: usuario.credito,
-        admin: usuario.admin
+        admin: usuario.admin,
+        perfil: usuario.perfil
     }
 }
 

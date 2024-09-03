@@ -58,7 +58,8 @@ const refreshService = async (token:string):Promise<IAutorizacaoResponse> => {
         codigo_saib: usuario.codigo_saib,
         credito: usuario.credito,
         admin: usuario.admin,
-        token: novoTokenAcesso
+        token: novoTokenAcesso,
+        perfil: usuario.perfil
     };
 
 }

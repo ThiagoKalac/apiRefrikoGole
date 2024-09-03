@@ -11,7 +11,7 @@ const DataSourceOracle = new DataSource({
     password: process.env.ORACLE_PASSWORD,
     sid: process.env.ORACLE_DATABASE,
     synchronize: true,
-    logging: ["error"],
+    logging: ["error"]
 })
 //path.join(__dirname + "/entity/*{.js,.ts}"), 
 
