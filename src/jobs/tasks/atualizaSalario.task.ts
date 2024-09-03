@@ -1,9 +1,9 @@
 import cron from 'node-cron';
-import { DataSourcePostGree, DataSupabase } from '../../../data-source';
-import { Funcionarios } from '../../../entity/Funcionarios';
-import { AppError } from '../../../error/appError';
-import { Logging } from '../../../log/loggin';
-import { tipoLog } from '../../../interface/log.interface';
+import { DataSourcePostGree, DataSupabase } from '../../data-source';
+import { Funcionarios } from '../../entity/Funcionarios';
+import { AppError } from '../../error/appError';
+import { Logging } from '../../log/loggin';
+import { tipoLog } from '../../interface/log.interface';
 
 class AtulizarSalario {
     private static async executar(): Promise<void>{

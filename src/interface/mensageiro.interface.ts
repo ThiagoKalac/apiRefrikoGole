@@ -17,7 +17,14 @@ interface IComprovante {
 
 enum TipoMensagemEnum {
     RECUPERACAO_SENHA = "RECUPERACAO_SENHA",
-    COMPROVANTE_PEDIDO = "COMPROVANTE_PEDIDO"
+    COMPROVANTE_PEDIDO = "COMPROVANTE_PEDIDO",
+    PEDIDO_NAO_ATENDIDO = "PEDIDO_NAO_ANTENDIDO",
+    PEDIDO_PARCIAL = "PEDIDO_ATENDIDO_PARCIAL"
 }
 
-export {IComprovante, IProdutoComprovante, TipoMensagemEnum};
+interface IProdutosNaoAtendidosDetalhes{
+    cod_produto: number;
+    nome: string;
+}
+
+export {IComprovante, IProdutoComprovante, TipoMensagemEnum,IProdutosNaoAtendidosDetalhes};

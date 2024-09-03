@@ -1,4 +1,4 @@
-import { IComprovante, TipoMensagemEnum } from "../../interface/comprovante.interface";
+import { IComprovante, TipoMensagemEnum } from "../../interface/mensageiro.interface";
 import { Mensageiro } from "../../utils/enviarMsgWhatsapp";
 
 

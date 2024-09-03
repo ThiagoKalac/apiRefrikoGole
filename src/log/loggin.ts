@@ -4,19 +4,15 @@ import cron from "node-cron";
 import { ILog } from "../interface/log.interface";
 
 class Logging  {
-    static async registrarLog (dadosLog:ILog):Promise<void>{
+    static async registrarLog (dadosLog:ILog | ILog[]):Promise<void>{
         
         try {
+             // Se dadosLog não for um array, transforma em um array com um único elemento
+             const logsArray = Array.isArray(dadosLog) ? dadosLog : [dadosLog];
+
             const {error} = await DataSupabase
                 .from('log')
-                .insert({
-                    mensagem: dadosLog.mensagem,
-                    stack_trace: dadosLog.stack_trace,
-                    usuario: dadosLog.usuario,
-                    stack: dadosLog.stack,
-                    dados_adicionais: dadosLog.dados_adicionais,
-                    tipo_log: dadosLog.tipo_log                    
-                })
+                .insert(logsArray);
             
             if(error){
                 console.error("Erro ao registrar log na linha 23, classe Logging:", error);

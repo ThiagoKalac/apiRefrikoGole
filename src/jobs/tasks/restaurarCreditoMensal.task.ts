@@ -1,10 +1,10 @@
 import cron from 'node-cron';
-import { DataSourcePostGree, DataSupabase } from '../../../data-source';
-import { IUsuarioCPF } from '../../../interface/usuario.interface';
-import { Funcionarios } from '../../../entity/Funcionarios';
-import { AppError } from '../../../error/appError';
-import { Logging } from '../../../log/loggin';
-import { tipoLog } from '../../../interface/log.interface';
+import { DataSourcePostGree, DataSupabase } from '../../data-source';
+import { IUsuarioCPF } from '../../interface/usuario.interface';
+import { Funcionarios } from '../../entity/Funcionarios';
+import { AppError } from '../../error/appError';
+import { Logging } from '../../log/loggin';
+import { tipoLog } from '../../interface/log.interface';
 
 class RestaurarCreditoMensalFuncionario {
     private static async executar(): Promise<void>{

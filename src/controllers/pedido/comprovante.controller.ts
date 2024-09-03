@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { IComprovante } from "../../interface/comprovante.interface";
+import { IComprovante } from "../../interface/mensageiro.interface";
 import { enviarComprovanteService } from "../../services/pedido/comprovante.service";
 
 

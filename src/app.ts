@@ -6,7 +6,7 @@ import { sessaoRouter } from "./routes/sessao.route";
 import { produtoRouter } from "./routes/produto.route";
 import { pedidoRouter } from "./routes/pedido.route";
 import cors from 'cors';
-import { Agenda } from "./services/jobs/agendaCronJobs";
+import { Agenda } from "./jobs/agendaCronJobs";
 
 
 const app = express();

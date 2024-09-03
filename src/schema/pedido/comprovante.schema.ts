@@ -1,5 +1,5 @@
 import * as yup from 'yup';
-import { IProdutoComprovante } from '../../interface/comprovante.interface';
+import { IProdutoComprovante } from '../../interface/mensageiro.interface';
 
 // Define o schema para o produto
 const produtoComprovanteSchema:yup.ObjectSchema<IProdutoComprovante> = yup.object().shape({

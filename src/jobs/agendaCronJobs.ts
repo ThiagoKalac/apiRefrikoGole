@@ -1,4 +1,4 @@
-import { Logging } from "../../log/loggin";
+import { Logging } from "../log/loggin";
 import { AtulizarSalario } from "./tasks/atualizaSalario.task";
 import { RestaurarCreditoMensalFuncionario } from "./tasks/restaurarCreditoMensal.task";
 
@@ -6,10 +6,10 @@ import { RestaurarCreditoMensalFuncionario } from "./tasks/restaurarCreditoMensa
 class Agenda {
     
     static iniciarTarefas() {
-        RestaurarCreditoMensalFuncionario.agendar()
-        AtulizarSalario.agendar()
-        Logging.agendar()
-        
+        RestaurarCreditoMensalFuncionario.agendar();
+        AtulizarSalario.agendar();
+        Logging.agendar();
     }
+
 }
 export {Agenda};

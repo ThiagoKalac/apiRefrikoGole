@@ -5,7 +5,7 @@ import { ICriarPedidoRequest, IPedidoCriado, IPedidosSupabase, IRetornoPedidoCri
 import { FormatadorDeData } from "../../utils/formatadorDeData";
 import { ProdutoServico } from "../../utils/buscarProdutoSaib";
 import { Logging } from "../../log/loggin";
-import { tipoLog } from "../../interface/log.interface";
+import { ILog, tipoLog } from "../../interface/log.interface";
 
 const criarPedidoService = async (dadosPedidos: ICriarPedidoRequest):Promise<IRetornoPedidoCriado> => {
     // desconstrução dos dados para extrair os pedidos do supabase
@@ -21,7 +21,8 @@ const criarPedidoService = async (dadosPedidos: ICriarPedidoRequest):Promise<IRe
     // quantificar quantos pedidos foram gerados e os pedidos que vão ser criados;
     let quantidadePedidos:number;
     let pedidosCriados: IPedidoCriado[] = [];
-    
+    let pedidosParaCriarLoggins: ILog[] = [];
+
     // fazendo a query no supabase na tabela "pedidos", fazendo inner join nas tabelas "usuario","pedido_produtos" e "produto"
     const { data, error } = await DataSupabase
         .from("pedidos")
@@ -260,12 +261,24 @@ const criarPedidoService = async (dadosPedidos: ICriarPedidoRequest):Promise<IRe
                 pedido_saib: numeroPedidoSaib
             })
 
+            pedidosParaCriarLoggins.push({
+                mensagem: `Pedido criado do: ${ped_usr_cod_saib} - ${pedido.usuario.nome} ${pedido.usuario.sobrenome}`,
+                stack_trace: null,
+                usuario: uuidUsuario,
+                stack: 'back-end',
+                dados_adicionais: `Pedido app: ${id}, pedido saib: ${numeroPedidoSaib}, quantidade de produtos ${pedido_produtos.length}`,
+                tipo_log: tipoLog.INFO
+            })
+
         }
 
         //salvando todas as alterações no banco, persistindo todas elas.
         await queryRunner.commitTransaction();
 
-        //loggin de sucesso
+        //loggin de sucesso, fazendo o loggin dos pedidos
+        Logging.registrarLog(pedidosParaCriarLoggins);
+        
+        //loggin de sucesso geral de todos os pedidos
         Logging.registrarLog({
             mensagem: 'Pedidos inseridos no SAIB',
             stack_trace: null,

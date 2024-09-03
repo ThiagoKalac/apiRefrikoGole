@@ -21,6 +21,8 @@ interface IUsuario {
     nome: string;
     sobrenome: string;
     cod_empresa: number;
+    whatsapp?:string;
+    credito?:number;
 }
 
 interface IProduto {
@@ -36,6 +38,8 @@ interface IPedidoProduto {
     quantidade: number;
     valor_total: number;
     valor_unitario: number;
+    atendido: boolean;
+    motivo_nao_atendimento: string | null;
 }
 
 interface IPedidosSupabase {
@@ -52,9 +56,46 @@ interface IPedidosSupabase {
     ped_qtd_itens: number;
     usuario: IUsuario;
     pedido_produtos: IPedidoProduto[];
+    pedido_fat_saib:number;
 }
 
-export {ICriarPedidoRequest, IPedidosSupabase, IRetornoPedidoCriado, IPedidoCriado};
+enum enumStatusPedidoSupabase {
+    PENDENTE = 'Pendente',
+    PROCESSAMENTO = 'Em processamento',
+    FATURADO = 'Faturado',
+    SEPARACAO = 'Em separação',
+    RETIRADA = 'Liberado para retirada',
+    CANCELADO = 'Cancelado',
+    FINALIZADO = 'Finalizado'
+}
+
+interface ISituacaoPedidoSaib{
+    PED_COLETOR: number,
+    COD_CLIENTE: number,
+    COD_EMP_CLIENTE: number,
+    SITUACAO: number,
+    PED_NOTA: number,
+    LIQUIDACAO: number,
+    NUMERO_PED_FAT: number
+}
+
+interface IProdutosSituacaoSaib{
+    PEDIDO_COLETOR: number,
+    COD_EMP: number,
+    COD_PRODUTO: number,
+    SITUACAO: number,
+    VALOR_UN: number
+}
+
+export {
+    ICriarPedidoRequest, 
+    IPedidosSupabase, 
+    IRetornoPedidoCriado, 
+    IPedidoCriado, 
+    enumStatusPedidoSupabase,
+    ISituacaoPedidoSaib,
+    IProdutosSituacaoSaib
+};
 
 
 
