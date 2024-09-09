@@ -16,7 +16,7 @@ const cadastroUsuarioSchema: yup.ObjectSchema<IUsuarioCriacao> = yup.object().sh
     credito: yup.number().required("credito:  é obrigatório"),
     codigo_saib: yup.number().required("codigo_saib: é obrigatório"),
     nome_empresa_senior: yup.string().required('nome_empresa: é obrigatório o nome da empresa cadastrado na senior'),
-    cnpj_empresa: yup.string().required('cnpn_empresa: CNPJ da empresa que o funcionario está contratado é obrigatório'),
+    cnpj_empresa: yup.string().required('cnpj_empresa: CNPJ da empresa que o funcionario está contratado é obrigatório'),
     id_usuario_senior: yup.number().required('id_usuario_senior: ID do usuario na SENIOR é obrigatório'),
     id_empresa_senior: yup.number().required('id_empresa_senior: ID da empresa na SENIOR é obrigatório'), 
     usuario_pj: yup.boolean().required('usuario_pj: Obrigatório passar a informação BOOLEAN, se o usuário é PJ'),
