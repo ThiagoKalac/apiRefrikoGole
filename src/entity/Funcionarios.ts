@@ -4,7 +4,7 @@ import { Column, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeor
 export class Funcionarios {
   @PrimaryGeneratedColumn("increment", { type: "bigint", name: "id" })
   id: number;
-
+  
   @Column("character varying", {name:"empresa", nullable: true, length:5})
   empresa: string | null;
 
@@ -68,4 +68,10 @@ export class Funcionarios {
 
   @Column("boolean", {name:"salario_alterado",default: false})
   salario_alterado: boolean;
+
+  @Column("numeric", {nullable: true, name:"id_funcionario"})
+  id_funcionario: number;
+
+  @Column("numeric", {nullable: true, name:"id_tipo_funcionario"})
+  id_tipo_funcionario: number;
 }

@@ -17,6 +17,11 @@ interface IUsuario{
   criado_em: Date;
   atualizado_em: Date | null;
   perfil: string | null;
+  nome_empresa_senior: string;
+  cnpj_empresa: string;
+  id_usuario_senior: number;
+  id_empresa_senior: number;
+  usuario_pj: boolean;
 }
 
 type IUsuarioCPF = Pick<IUsuario, 'cpf'>;
