@@ -1,20 +1,58 @@
 import { DataSourceOracle, DataSourcePostGree } from "../../data-source";
 import { Funcionarios } from "../../entity/Funcionarios";
 import { AppError } from "../../error/appError";
+import { tipoLog } from "../../interface/log.interface";
 import { IRespostaInfoUsuario } from "../../interface/usuario.interface";
+import { Logging } from "../../log/loggin";
 
 
 const infoUsuarioService = async (cpf: string):Promise<IRespostaInfoUsuario> => {
-    let informacoesUsuario = {};
-    const infoFuncionario = await infoUsuarioRh(cpf)
-    const infoSaib = await infoUsuarioSaib(infoFuncionario.cpf, infoFuncionario.cod_empresa)
-   
-    informacoesUsuario = {
-        ...infoFuncionario,
-        ...infoSaib 
-    } 
+    
+    try {
+        let informacoesUsuario = {};
+        const infoFuncionario = await infoUsuarioRh(cpf)
+        const infoSaib = await infoUsuarioSaib(infoFuncionario.cpf, infoFuncionario.cod_empresa)
+       
+        informacoesUsuario = {
+            ...infoFuncionario,
+            ...infoSaib 
+        } 
 
-    return informacoesUsuario as IRespostaInfoUsuario;
+        await Logging.registrarLog({
+            mensagem: 'Sucesso rota GET /info_usuario/:cpf',
+            stack: 'back-end',
+            tipo_log: tipoLog.INFO,
+            usuario: null,
+            dados_adicionais: `Sucesso ao puxar informações para o CPF ${cpf}, ${infoFuncionario.nome} ${infoFuncionario.sobrenome}, empresa: ${infoFuncionario.cod_empresa}`,
+            stack_trace: null
+        })
+    
+        return informacoesUsuario as IRespostaInfoUsuario;
+        
+    } catch (error) {
+        if(error instanceof AppError){
+            await Logging.registrarLog({
+                mensagem: 'Erro controlado - rota GET /info_usuario/:cpf',
+                stack: 'back-end',
+                tipo_log: tipoLog.INFO,
+                usuario: null,
+                dados_adicionais: `Tentativa de puxar informações para o CPF ${cpf}`,
+                stack_trace: Logging.formatarObjStackTraceErro(error)
+            })
+            throw error;
+        }else {
+            await Logging.registrarLog({
+                mensagem: 'Erro service - rota GET /info_usuario/:cpf',
+                stack: 'back-end',
+                tipo_log: tipoLog.ERRO,
+                usuario: null,
+                dados_adicionais: `Erro na Tentativa de puxar informações para o CPF ${cpf}`,
+                stack_trace: Logging.formatarObjStackTraceErro(error)
+            })
+
+            throw new AppError('Erro inesperado no servicor', 500)
+        }
+    }
 }
 
 
@@ -52,7 +90,12 @@ const infoUsuarioRh = async(cpf:string) => {
         cargo: funcionario.cargoNome.toLowerCase(),
         empresa: empresaNome[parseInt(funcionario.id_empresa_saib)],
         cod_empresa : parseInt(funcionario.id_empresa_saib),
-        credito:  Number(parseFloat(funcionario.limite).toFixed(2))
+        credito:  Number(parseFloat(funcionario.limite).toFixed(2)),
+        nome_empresa_senior: funcionario.filialNome,
+        cnpj_empresa: funcionario.cnpj,
+        id_usuario_senior: +funcionario.id_funcionario,
+        id_empresa_senior: +funcionario.filialCodigo,
+        usuario_pj: funcionario.id_tipo_funcionario === 1 ? false : true 
     }  
     
 }
