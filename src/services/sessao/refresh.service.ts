@@ -3,6 +3,7 @@ import { AppError } from "../../error/appError";
 import jwt, { VerifyErrors } from "jsonwebtoken";
 import "dotenv/config";
 import { IAutorizacaoResponse } from "../../interface/sessao.interface";
+import { IUsuario } from "../../interface/usuario.interface";
 
 const refreshService = async (token:string):Promise<IAutorizacaoResponse> => {
     if(!token){
@@ -14,12 +15,14 @@ const refreshService = async (token:string):Promise<IAutorizacaoResponse> => {
     if (!decode) throw new AppError("Token invalido", 403);
     const idUsuario = decode.sub
 
-    const {data: usuario, error} = await DataSupabase
+    const {data, error} = await DataSupabase
                     .from("usuario")
                     .select("*")
                     .eq("id", idUsuario)
                     .maybeSingle()
-            
+
+    const usuario = data as IUsuario;   
+
     if(error){
         throw new AppError(`Erro para buscar Token: ${error.message}`, 500);
     }
@@ -59,7 +62,8 @@ const refreshService = async (token:string):Promise<IAutorizacaoResponse> => {
         credito: usuario.credito,
         admin: usuario.admin,
         token: novoTokenAcesso,
-        perfil: usuario.perfil
+        perfil: usuario.perfil,
+        usuario_pj: usuario.usuario_pj
     };
 
 }
