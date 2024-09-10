@@ -1,3 +1,5 @@
+import { IAutorizacaoResponse } from "./sessao.interface";
+
 interface IUsuario{
   id: string;
   cpf: string;
@@ -52,6 +54,8 @@ interface IUsuarioAtualizarRecuperacaoSenha {
   confirma_senha: string
 }
 
+interface IUsuarioAtualizacaoResposta extends Omit<IAutorizacaoResponse, 'token'>{}
+
 export {
   IUsuarioCPF,
   IUsuarioCriacao,
@@ -59,5 +63,6 @@ export {
   IUsuario,
   IUsuarioValidarRecuperacaoSenha,
   IUsuarioAtualizarRecuperacaoSenha,
-  IUsuarioAtualizacao
+  IUsuarioAtualizacao,
+  IUsuarioAtualizacaoResposta
 };
