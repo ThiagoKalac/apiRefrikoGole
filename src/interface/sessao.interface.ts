@@ -18,6 +18,7 @@ interface IAutorizacaoResponse {
     codigo_saib: number;
     admin:boolean;
     perfil: string | null;
+    usuario_pj: boolean;
 }
 
 export {ILogin, IAutorizacaoResponse}
