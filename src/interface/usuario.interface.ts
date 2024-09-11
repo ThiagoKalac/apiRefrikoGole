@@ -24,11 +24,15 @@ interface IUsuario{
   id_usuario_senior: number;
   id_empresa_senior: number;
   usuario_pj: boolean;
+  ativado: boolean;
+  desativado_em: Date | null;
+  ativado_em: Date | null;
+
 }
 
 type IUsuarioCPF = Pick<IUsuario, 'cpf'>;
   
-interface IUsuarioCriacao extends Omit<IUsuario, 'id' | 'admin' | 'token' |'criado_em'| 'atualizado_em' | 'token_recuperacao' | 'perfil'> {
+interface IUsuarioCriacao extends Omit<IUsuario, 'id' | 'admin' | 'token' |'criado_em'| 'atualizado_em' | 'token_recuperacao' | 'perfil' | 'ativado' | 'desativado_em' | 'ativado_em'> {
   confirma_senha: string;
 }
 

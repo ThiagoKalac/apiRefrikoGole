@@ -17,6 +17,7 @@ import { validarExistenciaIdMiddleware } from "../middlewares/validarExistenciaI
 import { validarControleAcessoMiddleware } from "../middlewares/validarControleAcesso.middleware";
 import { atualizarUsuarioController } from "../controllers/usuario/atualizarUsuario.controller";
 import { infoUsuarioController } from "../controllers/usuario/infoUsuario.controller";
+import { deletarUsuarioController } from "../controllers/usuario/deletarUsuario.controller";
 
 
 
@@ -54,7 +55,7 @@ usuarioRouter.post('/recuperar_senha/atualizar',
     validarTokenMiddleware,
     validadorDadosMiddleware(recuperarSenhaAtualizarSchema),
     recuperacaoSenhaAtualizarController
-)
+);
 
 //rota atualizacao  usuario 
 usuarioRouter.patch('/atualizar/:id',
@@ -64,5 +65,13 @@ usuarioRouter.patch('/atualizar/:id',
     validadorDadosMiddleware(atualizarUsuarioSchema),
     atualizarUsuarioController
 )
+
+//rota para apagar usuario
+usuarioRouter.delete('/deletar/:id',
+    validarTokenMiddleware,
+    validarExistenciaIdMiddleware,
+    validarControleAcessoMiddleware,
+    deletarUsuarioController
+);
 
 export {usuarioRouter};

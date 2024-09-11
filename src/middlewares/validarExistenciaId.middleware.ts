@@ -11,7 +11,7 @@ const validarExistenciaIdMiddleware = async (req:Request, res:Response, next:Nex
                         .select('id, cpf, nome')
                         .eq("id", id)
                         .maybeSingle()
-                        
+                 
     if(error){
         return res.status(500).json({ mensagem: "Erro ao buscar ID supabase:", error });
     }
