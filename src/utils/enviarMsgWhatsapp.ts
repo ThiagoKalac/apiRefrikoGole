@@ -77,6 +77,9 @@ class Mensageiro {
             case TipoMensagemEnum.PEDIDO_PARCIAL:
                 mensagem = this.pedidoAtendidoParcial();
                 break;
+            case TipoMensagemEnum.LIBERADO_RETIRADA:
+                mensagem = this.liberadoPedido();
+                break;
             default:
                 throw new AppError(`Tipo de mensagem desconhecido: ${tipoMsg}`, 400);
         }
@@ -180,6 +183,16 @@ class Mensageiro {
         mensagem += `🍹 *Equipe Refriko Gole* 🍹\n\n`;
         mensagem += `⚠️ *Por favor, não responda essa mensagem, pois ela é automática.* 🤖`;
 
+        return mensagem;
+    }
+
+    private liberadoPedido():string {
+        let mensagem = `Olá *${this.usuario}* 😊, tudo bem?,\n\n`;
+        mensagem += `Aqui é a equipe da *Refriko Gole* 🍹. Temos uma ótima noticia para você 😁\n\n`
+        mensagem += `O seu pedido de número: *${this.idPedido}*\n 🍹🍻 Está liberado para retirada 🍹🍻\n\n`
+        mensagem += `Apresente o número do seu pedido: *_${this.idPedido}_* ou seu *_cpf_*\n\n`
+        mensagem += `🍹 *Equipe Refriko Gole* 🍹\n\n`;
+        mensagem += `⚠️ *Por favor, não responda essa mensagem, pois ela é automática.* 🤖`;
         return mensagem;
     }
 }
