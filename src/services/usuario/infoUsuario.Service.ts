@@ -95,7 +95,7 @@ const infoUsuarioRh = async(cpf:string) => {
         cnpj_empresa: funcionario.cnpj,
         id_usuario_senior: +funcionario.id_funcionario,
         id_empresa_senior: +funcionario.filialCodigo,
-        usuario_pj: funcionario.id_tipo_funcionario === 1 ? false : true 
+        usuario_pj: +funcionario.id_tipo_funcionario === 1 ? false : true 
     }  
     
 }

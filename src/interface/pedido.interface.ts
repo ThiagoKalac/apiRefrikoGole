@@ -40,6 +40,7 @@ interface IPedidoProduto {
     valor_unitario: number;
     atendido: boolean;
     motivo_nao_atendimento: string | null;
+    parcela?:number;
 }
 
 interface IPedidosSupabase {

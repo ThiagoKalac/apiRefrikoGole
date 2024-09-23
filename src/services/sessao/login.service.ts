@@ -19,13 +19,19 @@ const loginService = async (dadosLogin:ILogin):Promise<IAutorizacaoResponse> => 
     if(error){
         throw new AppError(`Erro Supabase ao tentar realizar login: ${error.message}`, 500)
     }
-    
-    
+
+      
     if(!data){
         throw new AppError("CPF ou senha incorretos", 400)
     }     
 
+
     usuario = data as IUsuario;
+
+    if(!usuario.ativado){
+        throw new AppError("Usário inativo, entrar em contato com o suporte para reativar sua conta", 403)
+    }
+
     const validacaoSenha = await bcrypt.compare(senha + process.env.Bcrypt_Chave, usuario.senha)
     if(!validacaoSenha){
         throw new AppError("CPF ou senha incorretos", 400)
