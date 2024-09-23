@@ -6,6 +6,7 @@ import { FormatadorDeData } from "../../utils/formatadorDeData";
 import { ProdutoServico } from "../../utils/buscarProdutoSaib";
 import { Logging } from "../../log/loggin";
 import { ILog, tipoLog } from "../../interface/log.interface";
+import { PedidoVerificacao } from "../../jobs/tasks/pedidoVerificacao.task";
 
 const criarPedidoService = async (dadosPedidos: ICriarPedidoRequest):Promise<IRetornoPedidoCriado> => {
     // desconstrução dos dados para extrair os pedidos do supabase
@@ -287,6 +288,10 @@ const criarPedidoService = async (dadosPedidos: ICriarPedidoRequest):Promise<IRe
             dados_adicionais: `Total de pedidos registrados: ${quantidadePedidos}, Pedidos puxados na data de ${dataInicio} à data de ${dataFim}`,
             tipo_log: tipoLog.INFO
         });
+
+        // Agendamento para verificação do status do pedido após o faturamento
+        agendarVerificacaoPedido(cod_empresa)
+
         
     } catch (error) {
         await queryRunner.rollbackTransaction();
@@ -344,6 +349,16 @@ const codigoDaOperacao = (idEmpresa:number):number => {
     }
 
     return codOperacaoPorEmpresa[idEmpresa];
+}
+
+const agendarVerificacaoPedido = (codEmpresa:number):void =>{
+    const dataAtual = new Date();
+    // setando o proximo data/dia valido.
+    dataAtual.setDate(dataAtual.getDate() + 1);
+    const proximoDia = dataAtual.getDate();
+
+    const verificacao = new PedidoVerificacao(proximoDia,codEmpresa);
+    verificacao.agendar()
 }
 
 export { criarPedidoService };

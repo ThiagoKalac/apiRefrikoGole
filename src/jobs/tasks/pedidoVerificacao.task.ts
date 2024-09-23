@@ -2,7 +2,7 @@ import cron, { ScheduledTask } from "node-cron";
 import { Logging } from "../../log/loggin";
 import { ILog, tipoLog } from "../../interface/log.interface";
 import { AppError } from "../../error/appError";
-import { DataSourceOracle, DataSupabase } from "../../data-source";
+import { DataLiquidaApp, DataSourceOracle, DataSupabase } from "../../data-source";
 import { enumStatusPedidoSupabase, IPedidosSupabase, IProdutosSituacaoSaib, ISituacaoPedidoSaib } from "../../interface/pedido.interface";
 import { Mensageiro } from "../../utils/enviarMsgWhatsapp";
 import { IProdutosNaoAtendidosDetalhes, TipoMensagemEnum } from "../../interface/mensageiro.interface";
@@ -54,7 +54,8 @@ class PedidoVerificacao {
 
     async verificarSituacaoDePedidosSaib(listaPedidos:IPedidosSupabase[]):Promise<{
         pedidosAtendidos:IPedidosSupabase[],
-        pedidosNaoAtendidos:IPedidosSupabase[]
+        pedidosNaoAtendidos:IPedidosSupabase[],
+        liquidacao: number 
     }>{
         // esse método irá iterar sobre a lista de pedidos que foi pegada no supabase
         // e irá fazer requisições no oracle(saib) para saber se o pedido foi atendido (faturado)
@@ -62,7 +63,7 @@ class PedidoVerificacao {
         // por fim retorna as listas.
         let pedidosAtendidos:IPedidosSupabase[] = []
         let pedidosNaoAtendidos:IPedidosSupabase[] = []
-
+       
     
         for(let pedido of listaPedidos){
             const pedidoSaib:ISituacaoPedidoSaib = await DataSourceOracle
@@ -84,16 +85,18 @@ class PedidoVerificacao {
                 .getRawOne()
             
 
-            if(pedidoSaib.SITUACAO = 1){
+            if(pedidoSaib.SITUACAO == 1){
                 pedido.liquidacao_id = pedidoSaib.LIQUIDACAO
                 pedido.pedido_fat_saib = pedidoSaib.NUMERO_PED_FAT
                 pedidosAtendidos.push(pedido)
             }else{
                 pedidosNaoAtendidos.push(pedido)
             }
-        }
 
-        return {pedidosAtendidos, pedidosNaoAtendidos}
+        }
+        const liquidacao = pedidosAtendidos[0].liquidacao_id;
+
+        return {pedidosAtendidos, pedidosNaoAtendidos, liquidacao}
     }
 
     private async tratativaPedidosNaoAtendidos(listaPedidos:IPedidosSupabase[]):Promise<void>{
@@ -356,11 +359,80 @@ class PedidoVerificacao {
         
     }
 
+    private async conferirLiquidacaoSeparada(liquidacao:number){
+        // esse método vai ser para verificar no app da liquidacao, se a liquidacao dos funcionarios já foi separada
+        // como o app ainda não está em total funcionamento, vou deixar a logica pronta
+        // porém, nesse momento sempre vai alterar o status do pedido para separado, depois precisa retirar
+        // como é automatizado esse processo, a logica é fazer a verificação 3 vezes, enquanto o status nao muda.
+            
+        // quando o projeto liquidacao, tiver rodando certinho, apagar tudo que tiver com comentario //liquidaApp        
+        let contador = 0 //liquidaApp
+        const taskLiquidacao:ScheduledTask = cron.schedule(`0 8,10,14 ${this.dia} * *`,
+            async () => {
+                const {data, error} = await DataLiquidaApp
+                    .from('liquidacao')
+                    .select('liqu_id, status_liq_id')
+                    .eq('liqu_id', liquidacao)
+                    .eq('liqu_emp', this.codEmpresa)
+                    .maybeSingle()
+            
+                if(error){
+                    throw new AppError('Erro ao tentar obter informações do app de liquidacao', 500)
+                }   
+
+                if(data.status_liq_id === 3){
+                    const {error:atualizacaoPedidosErro} = await DataSupabase
+                        .from('pedidos')
+                        .update({
+                            ped_status: "Em separação"
+                        })
+                        .eq('liquidacao_id', liquidacao)
+    
+                    if(atualizacaoPedidosErro){
+                        throw new AppError('Erro ao tentar atualizar o status dos pedidos, método conferirLiquidacaoSeparada', 500)
+                    }
+
+                    taskLiquidacao.stop()
+                }else{
+                    Logging.registrarLog({
+                        mensagem: 'Verificaçao da separação da liquidação',
+                        stack_trace: null,
+                        usuario: null,
+                        stack: 'back-end',
+                        dados_adicionais: `Liquidação: ${liquidacao} não separada ainda`,
+                        tipo_log: tipoLog.ERRO
+                    });
+
+                    contador++ //liquidaApp
+                }
+
+                if(contador === 3){ //liquidaApp
+                    const {error:atualizacaoPedidosErro} = await DataSupabase
+                        .from('pedidos')
+                        .update({
+                            ped_status: "Em separação"
+                        })
+                        .eq('liquidacao_id', liquidacao)
+    
+                    if(atualizacaoPedidosErro){
+                        throw new AppError('Erro ao tentar atualizar o status dos pedidos, método conferirLiquidacaoSeparada', 500)
+                    }
+
+                    taskLiquidacao.stop()
+                }
+
+            }, {
+                scheduled: true,
+                timezone: "America/Sao_Paulo"
+            });
+          
+        
+    }
 
     async executar(){
         try {
             const listaDePedidosSupabase:IPedidosSupabase[] = await this.buscarPedidosEmProcessamentoSupabase();
-            const {pedidosAtendidos, pedidosNaoAtendidos} = await this.verificarSituacaoDePedidosSaib(listaDePedidosSupabase);
+            const {pedidosAtendidos, pedidosNaoAtendidos, liquidacao} = await this.verificarSituacaoDePedidosSaib(listaDePedidosSupabase);
        
             if(pedidosAtendidos.length > 0){
                 await this.tratativaPedidosAtendidos(pedidosAtendidos);
@@ -369,7 +441,17 @@ class PedidoVerificacao {
             if(pedidosNaoAtendidos.length > 0){
                 await this.tratativaPedidosNaoAtendidos(pedidosNaoAtendidos);
             }
+
+            this.conferirLiquidacaoSeparada(liquidacao)
             
+            Logging.registrarLog({
+                mensagem: 'Sucesso na verificação dos pedidos - classe PedidoVerificacao',
+                stack_trace: null,
+                usuario: null,
+                stack: 'back-end',
+                dados_adicionais: `Pedidos verificado na empresa ${this.codEmpresa}, liquidacao: ${liquidacao}, pedidos atendido: ${pedidosAtendidos.length}, não atendidos: ${pedidosNaoAtendidos.length}`,
+                tipo_log: tipoLog.ERRO
+            });
         } catch (error) {
             console.log(error);
             //log de erro
@@ -391,9 +473,8 @@ class PedidoVerificacao {
         if(this.cronTask){
             this.cronTask.stop()
         }
-        // agendado para o proximo dia depois do faturamento as 5h 
-        console.log(this.dia) 
-        this.cronTask = cron.schedule(`12 15 ${this.dia} * *`, async () => {
+        // agendado para o proximo dia depois do faturamento as 6h 
+        this.cronTask = cron.schedule(`0 6 ${this.dia} * *`, async () => {
              await this.executar()    
         }, {
             scheduled: true,

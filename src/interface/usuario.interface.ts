@@ -60,6 +60,24 @@ interface IUsuarioAtualizarRecuperacaoSenha {
 
 interface IUsuarioAtualizacaoResposta extends Omit<IAutorizacaoResponse, 'token'>{}
 
+interface IDadosUsuarioNotificacao{
+  nome: string,
+  sobrenome: string,
+  whatsapp: string,
+  cod_empresa: number
+}
+
+interface IUsuarioNotificar {
+  id: number,
+  id_usuario: string,
+  liquidacao_id?: number | null,
+  numero_pedido_saib?: number | null,
+  pedido_fat_saib?: number | null,
+  usuario: IDadosUsuarioNotificacao
+}
+
+
+
 export {
   IUsuarioCPF,
   IUsuarioCriacao,
@@ -68,5 +86,6 @@ export {
   IUsuarioValidarRecuperacaoSenha,
   IUsuarioAtualizarRecuperacaoSenha,
   IUsuarioAtualizacao,
-  IUsuarioAtualizacaoResposta
+  IUsuarioAtualizacaoResposta,
+  IUsuarioNotificar
 };

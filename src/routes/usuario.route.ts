@@ -18,6 +18,7 @@ import { validarControleAcessoMiddleware } from "../middlewares/validarControleA
 import { atualizarUsuarioController } from "../controllers/usuario/atualizarUsuario.controller";
 import { infoUsuarioController } from "../controllers/usuario/infoUsuario.controller";
 import { deletarUsuarioController } from "../controllers/usuario/deletarUsuario.controller";
+import { notificarUsuarioController } from "../controllers/usuario/notificarUsuario.controller";
 
 
 
@@ -73,5 +74,11 @@ usuarioRouter.delete('/deletar/:id',
     validarControleAcessoMiddleware,
     deletarUsuarioController
 );
+
+//rota para notificar usuarios do pedido liberado
+usuarioRouter.get('/notificar', 
+    validarTokenMiddleware,
+    notificarUsuarioController
+)
 
 export {usuarioRouter};

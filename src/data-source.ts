@@ -19,6 +19,10 @@ const DataSourceOracle = new DataSource({
 const supabaseUrl = process.env.SUPABASE_URL
 const DataSupabase = createClient(supabaseUrl, process.env.SUPABASE_KEY);
 
+//conexão com o supabaseLiquidaApp
+const liquidaAppUrl = process.env.SUPABASE_LIQUIDA_APP_URL;
+const DataLiquidaApp = createClient(liquidaAppUrl, process.env.SUPABASE_LIQUIDA_APP_KEY);
+
 // conexao postgree
 const DataSourcePostGree = new DataSource({
     type: "postgres",
@@ -32,4 +36,4 @@ const DataSourcePostGree = new DataSource({
     entities: [Funcionarios]
 })
 
-export {DataSourceOracle, DataSupabase, DataSourcePostGree}
+export {DataSourceOracle, DataSupabase, DataSourcePostGree, DataLiquidaApp}
