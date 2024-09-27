@@ -139,7 +139,7 @@ class Mensageiro {
         }
         
         let mensagem = `Olá *${this.usuario}* 😊, como está você?,\n\n Aqui é a equipe da *Refriko Gole* 🍹 e aqui está o comprovante do seu pedido:\n\n`;
-        mensagem += `*Pedido:* ${this.idPedido}\n*Valor do Pedido:* R$${this.valorPedido}\n*Status:* Pendente\n*Faturamento previsto:* ${this.dataFaturamento}:\n\n`;
+        mensagem += `*Pedido:* ${this.idPedido}\n*Valor do Pedido:* R$${this.valorPedido}\n*Status:* Pendente\n\n`;
         mensagem += `🍻 Produtos:\n`
         this.listaProdutos.forEach(produto => {
             mensagem += `- *${produto.nome_produto}* - *qtd*:${produto.qtd} - *valor*:R$${produto.valor_uni} - *total*: R$${produto.valor_total}\n`;
