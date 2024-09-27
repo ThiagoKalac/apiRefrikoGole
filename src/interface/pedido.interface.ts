@@ -88,6 +88,29 @@ interface IProdutosSituacaoSaib{
     VALOR_UN: number
 }
 
+interface IDownLoadRelatorioRequest{
+    dataInicio: string,
+    dataFim: string,
+    cod_empresa: number
+}
+
+interface IPedidoRelatioRh{ 
+    pedido_id: number,
+    nome: string,
+    ped_status: string,
+    ped_data: string,
+    usuario_pj: boolean,
+    cod_empresa: number,
+    nome_empresa_senior: string,
+    cnpj_empresa: string,
+    id_usuario_senior: number,
+    id_empresa_senior: number,
+    ped_valor_total: number,
+    valor_outros: number,
+    valor_bebidas: number,
+    parcela: number
+}
+
 export {
     ICriarPedidoRequest, 
     IPedidosSupabase, 
@@ -95,7 +118,9 @@ export {
     IPedidoCriado, 
     enumStatusPedidoSupabase,
     ISituacaoPedidoSaib,
-    IProdutosSituacaoSaib
+    IProdutosSituacaoSaib,
+    IDownLoadRelatorioRequest,
+    IPedidoRelatioRh
 };
 
 

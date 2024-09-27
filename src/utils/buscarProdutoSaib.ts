@@ -31,7 +31,7 @@ class ProdutoServico {
         .innerJoin('GENER', 'GS','GS.GEN_TGEN_ID = PC.PROC_GEN_TGEN_ID_SABOR_DE AND GS.GEN_EMP_ID = PC.PROC_GEN_EMP_ID_SABOR_DE AND GS.GEN_ID = PC.PROC_GEN_ID_SABOR_DE')
         .where('TP.TPRC_GEN_ID = 15')
         .andWhere('P.PROD_ID = :prodId', {prodId: codigo})
-        .andWhere('P.PROD_EMP_ID in (22,26,42,43,124)')
+        .andWhere('P.PROD_EMP_ID in (2,26,42,43,6)')
         .andWhere(`TP.TPRC_DTA_VIGENCIA = (
                 SELECT 
                     MAX(TP2.TPRC_DTA_VIGENCIA) 
@@ -79,11 +79,11 @@ class ProdutoServico {
             }
     
             const nomeEmpresas = {
-                22 : 'Cambé/PR',
+                6  : 'Curitiba/PR',
+                2 : 'Cambé/PR',
                 26 : 'Cascavel/PR',
                 42 : 'Campo Grande/MS',
-                43 : 'Dourado/MS',
-                124: 'Curitiba/PR'
+                43 : 'Dourado/MS'
             }
     
             empresas.push({cod_emp: produto.COD_EMP, data_valida: dataValida, valor: produto.VALOR, nome:nomeEmpresas[produto.COD_EMP]}) 

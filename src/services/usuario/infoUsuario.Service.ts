@@ -71,12 +71,12 @@ const infoUsuarioRh = async(cpf:string) => {
     if(!funcionario){
         throw new AppError("Não é funcionário do Grupo Refriko, não pode realizar cadastro", 403)
     }
-
+    
     const empresaNome = {
         42: 'refriko campo grande',
         43: 'refriko dourados',
-        22: 'refriko cambé',
-        124: 'refriko curitiba',
+        2: 'refriko cambé',
+        6: 'refriko curitiba',
         26: 'refriko cascavel'
     }
 
@@ -126,8 +126,8 @@ const infoUsuarioSaib = async (cpf, empId) => {
     const rotaPorEmpresa = {
         42: 603,
         43: 603,
-        22: 53,
-        124: 53,
+        2: 53,
+        6: 53,
         26: 53
     }
     
