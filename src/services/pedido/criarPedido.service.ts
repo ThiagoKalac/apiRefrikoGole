@@ -320,8 +320,8 @@ const rotaFuncionario = (idEmpresa: number): number => {
     const rotaPorEmpresa = {
         42: 603,
         43: 603,
-        22: 53,
-        124: 53,
+        2: 53,
+        6: 53,
         26: 53
     };
     return rotaPorEmpresa[idEmpresa];
@@ -331,8 +331,8 @@ const cidadeFuncionario = (idEmpresa: number): number => {
     const cidadePorEmpresa = {
         42: 2218, // Campo Grande
         43: 2230, // Dourados
-        22: 3243, // Cambé
-        124: 3285, // Curitiba
+        2: 3243, // Cambé
+        6: 3285, // Curitiba
         26: 3260 // Cascavel
     };
     return cidadePorEmpresa[idEmpresa];
@@ -341,9 +341,9 @@ const cidadeFuncionario = (idEmpresa: number): number => {
 const codigoDaOperacao = (idEmpresa:number):number => {
 
     const codOperacaoPorEmpresa ={
-        22: 851,
+        2: 851,
         26: 851,
-        124: 851,
+        6: 851,
         42: 1,
         43: 1
     }
