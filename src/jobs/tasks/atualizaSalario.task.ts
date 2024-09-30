@@ -10,17 +10,21 @@ class AtulizarSalario {
         try {
             const listaTodosFuncionarios = await this.usuariosSenior();
             const listaUsuarios = this.usuariosComSalarioAlterado(listaTodosFuncionarios);
-         
+            
 
             if(listaUsuarios.length > 0){
                 const {peridoInicio, periodoFim} = this.obterPeriodosFiltroParaData();
-
+    
                 for(const usuario of listaUsuarios){
                    
                     const idUsuarioApp = await this.usuarioIdApp(usuario.cpf);
+                    
+                    if(idUsuarioApp == null) {
+                       continue
+                    };
                     const valorDosPedidos = await this.somaDosValoresDosPedidos(peridoInicio,periodoFim,idUsuarioApp);
-
-                    const novoCredito = +usuario.limite - valorDosPedidos;
+                    const valorDasParcelas = await this.verificarValoresParcela(peridoInicio,periodoFim, idUsuarioApp);
+                    const novoCredito = (+usuario.limite - valorDosPedidos) + valorDasParcelas;
                     
                     const {error} = await DataSupabase
                         .from('usuario')
@@ -55,7 +59,7 @@ class AtulizarSalario {
                 tipo_log: tipoLog.ERRO
             });
 
-            throw new AppError(`Erro linha 46 | tarefa AtulizarSalario ${error}`,500)
+            throw new AppError(`tarefa AtulizarSalario ${error}`,500)
         }
     }
 
@@ -100,36 +104,59 @@ class AtulizarSalario {
        
     }
 
-    private static async usuarioIdApp(cpf:string):Promise<string>{
+    private static async usuarioIdApp(cpf:string):Promise<string | null>{
+        
         const {data, error} = await DataSupabase
             .from('usuario') 
             .select('id')
             .eq('cpf', cpf)
             .maybeSingle()
         
+    
         if(error){
             throw new AppError('Erro para buscar Id do usuario || AtualizarSalario.usuarioIdApp', 500)
         }    
-        return data.id;
+     
+        return data ? data.id : null;
     }
 
     private static async somaDosValoresDosPedidos(peridoInicio:string,periodoFim:string,idUsuarioApp:string):Promise<number>{
-        const {data, error} = await DataSupabase
+        const {data:listaPedidos, error} = await DataSupabase
             .from('pedidos')
             .select('*')
             .eq('id_usuario', idUsuarioApp)
             .gte('ped_data', peridoInicio)
             .lte('ped_data', periodoFim)
 
+        
         if(error){
-            if(error){
-                throw new AppError('Erro para buscar Id do usuario || AtualizarSalario.somaDosValoresDosPedidos', 500)
-            }   
-        }
+            throw new AppError('Erro para buscar Id do usuario || AtualizarSalario.somaDosValoresDosPedidos', 500)
+        }   
+        
+        
        
-        const total = data.reduce((acc, pedido) => acc + pedido.ped_valor_total, 0);
+        const total = listaPedidos.reduce((acc, pedido) => acc + pedido.ped_valor_total, 0);
 
         return total;
+    }
+
+    private static async verificarValoresParcela(peridoInicio:string,periodoFim:string,idUsuarioApp:string):Promise<number>{
+        const {data:listaParcelas, error} = await DataSupabase
+            .from('parcela')
+            .select('*')
+            .eq('id_usuario', idUsuarioApp)
+            .eq('pago_todas', false)    
+            .gte('criado_em', peridoInicio)
+            .lte('criado_em', periodoFim)
+
+            if(error){
+                throw new AppError('Erro para buscar parcela do usuario || AtualizarSalario.verificarValoresParcela', 500)
+            }
+
+            if (listaParcelas.length == 0) return 0;
+
+            const total = listaParcelas.reduce((acc, parcela) => acc +  parcela.valor_parcela * (parcela.qtd_parcela - parcela.parcela_atual), 0)
+            return total;
     }
 
     static agendar(){
