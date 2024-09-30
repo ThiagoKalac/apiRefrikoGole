@@ -39,7 +39,7 @@ const downloadRelatorioService = async (idUsuario:string, dados:IDownLoadRelator
         const {data, error} = await DataSupabase
             .from('relatorio_pedido_rh')
             .select('*')
-            .eq('usuario_pj',true)
+            .eq('usuario_pj',false)
             .eq('cod_empresa', cod_empresa)
             .gte('ped_data', `${dataInicio}T00:00:00.000`)
             .lte('ped_data', `${dataFim}T23:59:59.999`)
