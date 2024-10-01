@@ -14,6 +14,7 @@ class RestaurarCreditoMensalFuncionario {
             .select('*')
             .eq('id_usuario', idUsuario)
             .eq('pago_todas', false)
+            .eq('canceladas', false)  
        
         if(error) throw error
 

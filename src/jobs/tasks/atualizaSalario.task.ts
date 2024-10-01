@@ -146,6 +146,7 @@ class AtulizarSalario {
             .select('*')
             .eq('id_usuario', idUsuarioApp)
             .eq('pago_todas', false)    
+            .eq('canceladas', false)    
             .gte('criado_em', peridoInicio)
             .lte('criado_em', periodoFim)
 
