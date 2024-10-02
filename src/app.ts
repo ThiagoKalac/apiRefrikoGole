@@ -11,7 +11,20 @@ import { Agenda } from "./jobs/agendaCronJobs";
 
 const app = express();
 
-app.use(cors());
+// Configuração do CORS para controlar origens permitidas
+const allowedOrigins = ['http://localhost:2000'];
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Origem não permitida pelo CORS'));
+    }
+  },
+  methods: ['GET', 'POST', 'PATCH', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
+}));
 
 app.use(express.json());
 
