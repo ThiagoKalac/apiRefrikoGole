@@ -19,6 +19,7 @@ import { atualizarUsuarioController } from "../controllers/usuario/atualizarUsua
 import { infoUsuarioController } from "../controllers/usuario/infoUsuario.controller";
 import { deletarUsuarioController } from "../controllers/usuario/deletarUsuario.controller";
 import { notificarUsuarioController } from "../controllers/usuario/notificarUsuario.controller";
+import { validarTokenFixoMiddleware } from "../middlewares/validarTokenFixo.middleware";
 
 
 
@@ -27,12 +28,14 @@ const usuarioRouter = Router();
 
 //rota para trazer informações do usuario na SENIOR e SAIB
 usuarioRouter.get('/info_usuario/:cpf',
+    validarTokenFixoMiddleware,
     validarCpfMiddleware,
     infoUsuarioController
 );
 
 //rota para cadastrar cliente
 usuarioRouter.post('/cadastro', 
+    validarTokenFixoMiddleware,
     validarCpfMiddleware,
     validarCpfExistenteMiddleware,
     validadorDadosMiddleware(cadastroUsuarioSchema),
@@ -41,12 +44,14 @@ usuarioRouter.post('/cadastro',
 
 //rota para gerar token para recuperar senha
 usuarioRouter.post('/recuperar_senha/solicitar', 
+    validarTokenFixoMiddleware,
     validarCpfMiddleware,
     recuperacaoSenhaSoliciarController
 );
 
 //rota para validar token de recuperação de senha
 usuarioRouter.post('/recuperar_senha/validar', 
+    validarTokenFixoMiddleware,
     validadorDadosMiddleware(recuperarSenhaValidarSchema),
     recuperacaoSenhaValidarController
 );

@@ -4,20 +4,19 @@ import { validadorDadosMiddleware } from "../middlewares/validadorDados.middlewa
 import { criarPedidoSchema } from "../schema/pedido/criar.schema";
 import { enviarComprovanteSchema } from "../schema/pedido/comprovante.schema";
 import { enviarComprovanteController } from "../controllers/pedido/comprovante.controller";
-import { PedidoVerificacao } from "../jobs/tasks/pedidoVerificacao.task";
 import { downloadRelatorioController } from "../controllers/pedido/downloadRelatorio.controller";
 import { validarTokenMiddleware } from "../middlewares/validarToken.middleware";
 import { downloadRelatorioSchema } from "../schema/pedido/downloadRelatorio.schema";
-
+import { validarTokenFixoMiddleware } from "../middlewares/validarTokenFixo.middleware";
 
 const pedidoRouter = Router();
 
 
 // inserir pedido saib
-pedidoRouter.post('/criar_pedido', validadorDadosMiddleware(criarPedidoSchema),criarPedidoController)
+pedidoRouter.post('/criar_pedido',validarTokenFixoMiddleware, validadorDadosMiddleware(criarPedidoSchema),criarPedidoController)
 
 //enviar comprovante no whatsapp do cliente
-pedidoRouter.post('/enviar_comprovante',validadorDadosMiddleware(enviarComprovanteSchema),enviarComprovanteController)
+pedidoRouter.post('/enviar_comprovante',validarTokenFixoMiddleware,validadorDadosMiddleware(enviarComprovanteSchema),enviarComprovanteController)
 
 pedidoRouter.post('/download_relatorio', 
     validarTokenMiddleware,
