@@ -7,6 +7,7 @@ import { produtoRouter } from "./routes/produto.route";
 import { pedidoRouter } from "./routes/pedido.route";
 import cors from 'cors';
 import { Agenda } from "./jobs/agendaCronJobs";
+import { globalLimiter } from "./limiters/global.limiter";
 
 
 const app = express();
@@ -25,6 +26,9 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
 }));
+
+app.use(globalLimiter);
+
 
 app.use(express.json());
 

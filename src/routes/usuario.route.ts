@@ -20,6 +20,8 @@ import { infoUsuarioController } from "../controllers/usuario/infoUsuario.contro
 import { deletarUsuarioController } from "../controllers/usuario/deletarUsuario.controller";
 import { notificarUsuarioController } from "../controllers/usuario/notificarUsuario.controller";
 import { validarTokenFixoMiddleware } from "../middlewares/validarTokenFixo.middleware";
+import { cadastroLimiter, infoUsuarioLimiter, notificarUsuarioLimiter, recuperacaoSenhaLimiter } from "../limiters/usuario.limiter";
+import { usuariosAutenticadosLimiter } from "../limiters/global.limiter";
 
 
 
@@ -30,6 +32,7 @@ const usuarioRouter = Router();
 usuarioRouter.get('/info_usuario/:cpf',
     validarTokenFixoMiddleware,
     validarCpfMiddleware,
+    infoUsuarioLimiter,
     infoUsuarioController
 );
 
@@ -39,6 +42,7 @@ usuarioRouter.post('/cadastro',
     validarCpfMiddleware,
     validarCpfExistenteMiddleware,
     validadorDadosMiddleware(cadastroUsuarioSchema),
+    cadastroLimiter,
     cadastroUsuarioController
 );
 
@@ -46,6 +50,7 @@ usuarioRouter.post('/cadastro',
 usuarioRouter.post('/recuperar_senha/solicitar', 
     validarTokenFixoMiddleware,
     validarCpfMiddleware,
+    recuperacaoSenhaLimiter,
     recuperacaoSenhaSoliciarController
 );
 
@@ -69,6 +74,7 @@ usuarioRouter.patch('/atualizar/:id',
     validarExistenciaIdMiddleware,
     validarControleAcessoMiddleware,
     validadorDadosMiddleware(atualizarUsuarioSchema),
+    usuariosAutenticadosLimiter,
     atualizarUsuarioController
 )
 
@@ -77,12 +83,14 @@ usuarioRouter.delete('/deletar/:id',
     validarTokenMiddleware,
     validarExistenciaIdMiddleware,
     validarControleAcessoMiddleware,
+    usuariosAutenticadosLimiter,
     deletarUsuarioController
 );
 
 //rota para notificar usuarios do pedido liberado
 usuarioRouter.get('/notificar', 
     validarTokenMiddleware,
+    notificarUsuarioLimiter,
     notificarUsuarioController
 )
 

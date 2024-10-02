@@ -8,21 +8,33 @@ import { downloadRelatorioController } from "../controllers/pedido/downloadRelat
 import { validarTokenMiddleware } from "../middlewares/validarToken.middleware";
 import { downloadRelatorioSchema } from "../schema/pedido/downloadRelatorio.schema";
 import { validarTokenFixoMiddleware } from "../middlewares/validarTokenFixo.middleware";
+import { criarPedidoLimiter, downloadRelatorioLimiter, enviarComprovanteLimiter } from "../limiters/pedido.limiter";
 
 const pedidoRouter = Router();
 
 
 // inserir pedido saib
-pedidoRouter.post('/criar_pedido',validarTokenFixoMiddleware, validadorDadosMiddleware(criarPedidoSchema),criarPedidoController)
+pedidoRouter.post('/criar_pedido',
+    validarTokenFixoMiddleware, 
+    validadorDadosMiddleware(criarPedidoSchema),
+    criarPedidoLimiter,
+    criarPedidoController
+);
 
 //enviar comprovante no whatsapp do cliente
-pedidoRouter.post('/enviar_comprovante',validarTokenFixoMiddleware,validadorDadosMiddleware(enviarComprovanteSchema),enviarComprovanteController)
+pedidoRouter.post('/enviar_comprovante',
+    validarTokenFixoMiddleware,
+    validadorDadosMiddleware(enviarComprovanteSchema),
+    enviarComprovanteLimiter,
+    enviarComprovanteController
+);
 
 pedidoRouter.post('/download_relatorio', 
     validarTokenMiddleware,
     validadorDadosMiddleware(downloadRelatorioSchema),
+    downloadRelatorioLimiter,
     downloadRelatorioController
-)
+);
 
 
 export {pedidoRouter};

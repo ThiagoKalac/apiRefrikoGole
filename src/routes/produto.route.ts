@@ -7,6 +7,7 @@ import { validarProdutoCadastradoMiddleware } from "../middlewares/validarProdut
 import { atualizarProdutoController } from "../controllers/produto/atualizarProduto.controller";
 import { validadorDadosMiddleware } from "../middlewares/validadorDados.middleware";
 import { atualizarProdutoSchema } from "../schema/produto/atualizar.schema";
+import { atualizarProdutoLimiter, infoProdutoLimiter } from "../limiters/produto.limiter";
 
 const produtoRouter = Router();
 
@@ -15,6 +16,7 @@ produtoRouter.get('/info_produto/:codigo',
     validarTokenMiddleware, 
     validarAdminMiddleware,
     validarProdutoExistenteMiddleware,
+    infoProdutoLimiter,
     infoProdutoController
 );
 
@@ -24,6 +26,7 @@ produtoRouter.post('/atualizar/:codigo',
     validarAdminMiddleware,
     validarProdutoCadastradoMiddleware,
     validadorDadosMiddleware(atualizarProdutoSchema),
+    atualizarProdutoLimiter,
     atualizarProdutoController
 )
 
