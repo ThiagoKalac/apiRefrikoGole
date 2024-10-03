@@ -51,6 +51,18 @@ O projeto é organizado nas seguintes pastas principais:
         yarn dev
     ```
 
+## Documentação 
+
+Documentação completa pode acessar nesse link aqui: 
+
+Na pasta docs, pode ter acesso as imagens dos diagramas:
+ - Geral do app.
+ - Front-end, fluxo do funcionamento do app.
+ - Back-end, das tabelas e seus relacionamentos.
+
+### Diagramas
+
+[Diagrama geral app](https://miro.com/welcomeonboard/Yk85VUhVZ1FqaTBuMlRCWUNTbGcxT3F3MkVkWnNtNXRTUjFFTnNGZ05kZFNXTjhnYVJzUG44U255NXdsWG9CYXwzNDU4NzY0NTc1OTgxNDkzNjk1fDI=?share_link_id=202725458207)
 
 ## Contribuição
 
