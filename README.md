@@ -41,9 +41,9 @@ O projeto é organizado nas seguintes pastas principais:
     ```
 3. Crie um arquivo .env na raiz do projeto com as seguintes variáveis/credenciais:
 
-  - **oracle**: passar as credencias do oracle no arquivo .env (seguir o modo delo de exemplo) 
-  - **postgree**: passar as credencias do postgree no arquivo .env (seguir o modo delo de exemplo) 
-  - **supabase**: passar as credencias do oracle no arquivo .env (seguir o modo delo de exemplo) 
+  - **oracle**: passar as credenciais do oracle no arquivo .env (seguir o modo delo de exemplo) 
+  - **postgree**: passar as credenciais do postgree no arquivo .env (seguir o modo delo de exemplo) 
+  - **supabase**: passar as credenciais do oracle no arquivo .env (seguir o modo delo de exemplo) 
 
 4. Inicie o servidor em modo de desenvolvimento:
 
@@ -60,9 +60,7 @@ Na pasta docs, pode ter acesso as imagens dos diagramas:
  - Front-end, fluxo do funcionamento do app.
  - Back-end, das tabelas e seus relacionamentos.
 
-### Diagramas
 
-[Diagrama geral app](https://miro.com/welcomeonboard/Yk85VUhVZ1FqaTBuMlRCWUNTbGcxT3F3MkVkWnNtNXRTUjFFTnNGZ05kZFNXTjhnYVJzUG44U255NXdsWG9CYXwzNDU4NzY0NTc1OTgxNDkzNjk1fDI=?share_link_id=202725458207)
 
 ## Contribuição
 

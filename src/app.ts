@@ -8,9 +8,13 @@ import { pedidoRouter } from "./routes/pedido.route";
 import cors from 'cors';
 import { Agenda } from "./jobs/agendaCronJobs";
 import { globalLimiter } from "./limiters/global.limiter";
+import { AppError } from "./error/appError";
 
 
 const app = express();
+
+// Configura o trust proxy para aceitar o X-Forwarded-For e identificar o IP real do cliente, aceitando a primeira camada
+app.set('trust proxy', 1);
 
 // Configuração do CORS para controlar origens permitidas
 const allowedOrigins = ['http://localhost:2000'];
@@ -19,7 +23,7 @@ app.use(cors({
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
-      callback(new Error('Origem não permitida pelo CORS'));
+      callback(new AppError('Origem não permitida pelo CORS',403));
     }
   },
   methods: ['GET', 'POST', 'PATCH', 'DELETE'],
@@ -32,7 +36,7 @@ app.use(globalLimiter);
 
 app.use(express.json());
 
-app.use('/usuario', usuarioRouter);
+app.use('/api/v1/rfk/usuario', usuarioRouter);
 app.use('', sessaoRouter);
 app.use('/produto',produtoRouter);
 app.use('/pedido',pedidoRouter);

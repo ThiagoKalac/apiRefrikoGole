@@ -1,11 +1,11 @@
 import { Request, Response } from "express"
 import { IUsuarioAtualizarRecuperacaoSenha, IUsuarioCPF, IUsuarioValidarRecuperacaoSenha } from "../../interface/usuario.interface"
-import { recuperacaoSenhaSoliciarService, recuperacaoSenhaValidarService, recuperacaoSenhaAtualizarService } from "../../services/usuario/recuperacaoSenha.service";
+import { recuperacaoSenhaSolicitarService, recuperacaoSenhaValidarService, recuperacaoSenhaAtualizarService } from "../../services/usuario/recuperacaoSenha.service";
 
 
 const recuperacaoSenhaSoliciarController = async (req:Request, res:Response) => {
     const cpf:IUsuarioCPF = req.body.cpf;
-    await recuperacaoSenhaSoliciarService(cpf)
+    await recuperacaoSenhaSolicitarService(cpf)
     return res.status(200).json({mensagem: "Enviamos um código de verificação de 5 dígitos para o seu WhatsApp"})
 }
 

@@ -20,7 +20,6 @@ sessaoRouter.post("/login",
 
 // rota validar token de acesso
 sessaoRouter.get("/validar_token", 
-    validarTokenFixoMiddleware,
     validarTokenMiddleware, 
     validarTokenLimiter,
     validarTokenController
@@ -28,7 +27,6 @@ sessaoRouter.get("/validar_token",
 
 // rota para atualizar token de acesso e verificar o refresh token
 sessaoRouter.get("/refresh_token", 
-    validarTokenFixoMiddleware,
     refreshTokenLimiter,
     refreshController
 );

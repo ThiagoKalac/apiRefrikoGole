@@ -5,7 +5,7 @@ import { DataSupabase } from "../../data-source";
 import { AppError } from "../../error/appError";
 import jwt from "jsonwebtoken";
 
-const recuperacaoSenhaSoliciarService = async (cpf:IUsuarioCPF):Promise<void> => {
+const recuperacaoSenhaSolicitarService = async (cpf:IUsuarioCPF):Promise<void> => {
 
     const {data: usuario, error} = await DataSupabase
         .from('usuario')
@@ -19,6 +19,10 @@ const recuperacaoSenhaSoliciarService = async (cpf:IUsuarioCPF):Promise<void> =>
 
     if(!usuario){
         throw new AppError(`CPF não pertence a nenhuma usuario cadastrado na nossa base de dados`, 404);
+    }
+
+    if(!usuario.ativado){
+        throw new AppError(`Usuário está desativado, entre em contato com o suporte`, 403);
     }
 
     const tokenJwt = jwt.sign(
@@ -101,4 +105,4 @@ const recuperacaoSenhaAtualizarService = async (idUsuario:string, senha:string):
 
 
 
-export {recuperacaoSenhaSoliciarService, recuperacaoSenhaValidarService, recuperacaoSenhaAtualizarService};
+export {recuperacaoSenhaSolicitarService, recuperacaoSenhaValidarService, recuperacaoSenhaAtualizarService};

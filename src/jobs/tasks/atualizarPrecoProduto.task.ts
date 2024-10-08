@@ -12,7 +12,7 @@ class AtualizarPrecoProduto {
         try {
             const {data:listaProdutosParaAtualizar, error: listaProdutoErro} = await DataSupabase
                 .from('produto')
-                .select('pr_cod')
+                .select('pr_cod, pr_descricao')
             
                 if(listaProdutoErro){
                     throw listaProdutoErro
@@ -53,7 +53,7 @@ class AtualizarPrecoProduto {
                     tipo_log: tipoLog.INFO,
                     usuario: null,
                     stack_trace: null,
-                    dados_adicionais: `Produto ID: ${produto.pr_cod}, nome: ${produtoAtual.nome}, empresas atualizadas: ${JSON.stringify(empresasAtualizadas)}`
+                    dados_adicionais: `Produto ID: ${produto.pr_cod}, nome: ${produtoAtual.pr_descricao}, empresas atualizadas: ${JSON.stringify(empresasAtualizadas)}`
                 });
             
             }

@@ -29,7 +29,7 @@ import { usuariosAutenticadosLimiter } from "../limiters/global.limiter";
 const usuarioRouter = Router();
 
 //rota para trazer informações do usuario na SENIOR e SAIB
-usuarioRouter.get('/info_usuario/:cpf',
+usuarioRouter.get('/info_ud/:cpf',
     validarTokenFixoMiddleware,
     validarCpfMiddleware,
     infoUsuarioLimiter,
@@ -37,7 +37,7 @@ usuarioRouter.get('/info_usuario/:cpf',
 );
 
 //rota para cadastrar cliente
-usuarioRouter.post('/cadastro', 
+usuarioRouter.post('/gerar_acesso_unico', 
     validarTokenFixoMiddleware,
     validarCpfMiddleware,
     validarCpfExistenteMiddleware,
@@ -47,7 +47,7 @@ usuarioRouter.post('/cadastro',
 );
 
 //rota para gerar token para recuperar senha
-usuarioRouter.post('/recuperar_senha/solicitar', 
+usuarioRouter.post('/chave_acesso/solicitar_recuperacao', 
     validarTokenFixoMiddleware,
     validarCpfMiddleware,
     recuperacaoSenhaLimiter,
@@ -55,21 +55,21 @@ usuarioRouter.post('/recuperar_senha/solicitar',
 );
 
 //rota para validar token de recuperação de senha
-usuarioRouter.post('/recuperar_senha/validar', 
+usuarioRouter.post('/chave_acesso/solicitar_validacao', 
     validarTokenFixoMiddleware,
     validadorDadosMiddleware(recuperarSenhaValidarSchema),
     recuperacaoSenhaValidarController
 );
 
 //rota atualizacao senha do usuario na recuperacao de senha
-usuarioRouter.post('/recuperar_senha/atualizar',
+usuarioRouter.post('/chave_acesso/reiniciar_acesso',
     validarTokenMiddleware,
     validadorDadosMiddleware(recuperarSenhaAtualizarSchema),
     recuperacaoSenhaAtualizarController
 );
 
 //rota atualizacao  usuario 
-usuarioRouter.patch('/atualizar/:id',
+usuarioRouter.patch('/modificar/:id',
     validarTokenMiddleware,
     validarExistenciaIdMiddleware,
     validarControleAcessoMiddleware,
@@ -78,8 +78,8 @@ usuarioRouter.patch('/atualizar/:id',
     atualizarUsuarioController
 )
 
-//rota para apagar usuario
-usuarioRouter.delete('/deletar/:id',
+//rota para desativar usuario
+usuarioRouter.delete('/remover_entrada/:id',
     validarTokenMiddleware,
     validarExistenciaIdMiddleware,
     validarControleAcessoMiddleware,
@@ -88,7 +88,7 @@ usuarioRouter.delete('/deletar/:id',
 );
 
 //rota para notificar usuarios do pedido liberado
-usuarioRouter.get('/notificar', 
+usuarioRouter.get('/notificar_avs', 
     validarTokenMiddleware,
     notificarUsuarioLimiter,
     notificarUsuarioController
