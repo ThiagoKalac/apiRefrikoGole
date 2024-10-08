@@ -39,6 +39,8 @@ const notificarUsuarioService = async (uuidUsuario:string = 'asd3sda545'):Promis
         const listaIds: number[] = listaPedidos.map(pedidos => pedidos.id);
         await alterarStatusPedido(listaIds);
         
+        let contador = 0;
+
         for (const pedido of listaPedidos){
             
             const nomeUsuario = pedido.usuario.nome.charAt(0).toUpperCase()+pedido.usuario.nome.substring(1)
@@ -47,6 +49,9 @@ const notificarUsuarioService = async (uuidUsuario:string = 'asd3sda545'):Promis
 
             const mensageiro = new Mensageiro(usuario, pedido.usuario.whatsapp, null, null, pedido.id,null,null);
             mensageiro.enviar(TipoMensagemEnum.LIBERADO_RETIRADA);
+
+          
+           
             
             listaPedidosNotificadosLoggin.push({
                 mensagem: `Pedido notificado no whatsapp ${pedido.usuario.whatsapp}`,
@@ -56,6 +61,13 @@ const notificarUsuarioService = async (uuidUsuario:string = 'asd3sda545'):Promis
                 dados_adicionais: `Pedido ${pedido.id} do usuario:${pedido.usuario.nome} ${pedido.usuario.sobrenome}, pedido saib: ${pedido.numero_pedido_saib}, pedido fat: ${pedido.pedido_fat_saib}`,
                 tipo_log: tipoLog.INFO
             })
+
+            contador++
+            if(contador >= 15){
+                contador = 0;
+                console.log('Aguardando 2 minutos...');
+                await new Promise(resolve => setTimeout(resolve,120000));
+            }
         }
 
 
