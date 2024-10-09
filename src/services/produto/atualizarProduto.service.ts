@@ -12,7 +12,7 @@ const atualizarProdutoService = async (codigo:number, dadosAtualizar:IProdutoAtu
         const nomeFormatado = nome ? ProdutoServico.formatarNome(nome) : produtoSaib.nome;
         const {empresas, ...produto} = produtoSaib;
         produto.nome = nomeFormatado;
-
+    
         const {error:AtualizaçãoProduto} = await DataSupabase
             .from('produto')
             .update({

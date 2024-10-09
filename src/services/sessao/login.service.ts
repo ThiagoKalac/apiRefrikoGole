@@ -40,7 +40,8 @@ const loginService = async (dadosLogin:ILogin):Promise<IAutorizacaoResponse> => 
 
     const tokenAcesso = jwt.sign(
         {
-            admin: usuario.admin
+            admin: usuario.admin,
+            perfil: usuario.perfil
         },
         process.env.SECRET_KEY,
         {expiresIn: "5h", subject: usuario.id}

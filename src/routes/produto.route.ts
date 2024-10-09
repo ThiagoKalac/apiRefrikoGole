@@ -1,29 +1,29 @@
 import { Router } from "express";
 import { infoProdutoController } from "../controllers/produto/infoProduto.controller";
 import { validarTokenMiddleware } from "../middlewares/validarToken.middleware";
-import { validarAdminMiddleware } from "../middlewares/validarAdmin.middeware";
 import { validarProdutoExistenteMiddleware } from "../middlewares/validarProdutoExistente.middleware";
 import { validarProdutoCadastradoMiddleware } from "../middlewares/validarProdutoCadastrado.middleware";
 import { atualizarProdutoController } from "../controllers/produto/atualizarProduto.controller";
 import { validadorDadosMiddleware } from "../middlewares/validadorDados.middleware";
 import { atualizarProdutoSchema } from "../schema/produto/atualizar.schema";
 import { atualizarProdutoLimiter, infoProdutoLimiter } from "../limiters/produto.limiter";
+import { validarPerfilAcessoMiddleware } from "../middlewares/validarPerfilAcesso.middleware";
 
 const produtoRouter = Router();
 
 //validar existencia do produto
-produtoRouter.get('/info_produto/:codigo',
+produtoRouter.get('/consulta/:codigo',
     validarTokenMiddleware, 
-    validarAdminMiddleware,
+    validarPerfilAcessoMiddleware(['gestao', 'faturamento']),
     validarProdutoExistenteMiddleware,
     infoProdutoLimiter,
     infoProdutoController
 );
 
 //atualizar produto
-produtoRouter.post('/atualizar/:codigo',
+produtoRouter.post('/atualizar_prod/:codigo',
     validarTokenMiddleware, 
-    validarAdminMiddleware,
+    validarPerfilAcessoMiddleware(['gestao', 'faturamento']),
     validarProdutoCadastradoMiddleware,
     validadorDadosMiddleware(atualizarProdutoSchema),
     atualizarProdutoLimiter,

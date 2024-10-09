@@ -24,7 +24,8 @@ const validarTokenMiddleware = async (req: Request, res:Response, next:NextFunct
         }else{
             req.usuario = {
                 id: decode.sub,
-                admin: decode.admin
+                admin: decode.admin,
+                perfil: decode.perfil
             }
            
             return next()

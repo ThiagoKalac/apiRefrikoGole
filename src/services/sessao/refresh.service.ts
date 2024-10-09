@@ -39,7 +39,8 @@ const refreshService = async (token:string):Promise<IAutorizacaoResponse> => {
 
         novoTokenAcesso = jwt.sign(
             {
-                admin: decode.admin
+                admin: decode.admin,
+                perfil: decode.perfil
             },
             process.env.SECRET_KEY as jwt.Secret,
             { expiresIn: "5h", subject: idUsuario as string }

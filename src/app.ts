@@ -38,7 +38,7 @@ app.use(express.json());
 
 app.use('/api/v1/rfk/usuario', usuarioRouter);
 app.use('/api/v1/rfk/sessao', sessaoRouter);
-app.use('/produto',produtoRouter);
+app.use('/api/v1/rfk/item',produtoRouter);
 app.use('/pedido',pedidoRouter);
 app.use(tratarError);
 
