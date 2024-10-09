@@ -11,7 +11,7 @@ import { loginLimiter, refreshTokenLimiter, validarTokenLimiter } from "../limit
 const sessaoRouter = Router();
 
 // rota de login
-sessaoRouter.post("/login", 
+sessaoRouter.post("/conectar", 
     validarTokenFixoMiddleware,
     validadorDadosMiddleware(loginSchema),
     loginLimiter, 
@@ -19,14 +19,14 @@ sessaoRouter.post("/login",
 );
 
 // rota validar token de acesso
-sessaoRouter.get("/validar_token", 
+sessaoRouter.get("/confirma_validade", 
     validarTokenMiddleware, 
     validarTokenLimiter,
     validarTokenController
 );
 
 // rota para atualizar token de acesso e verificar o refresh token
-sessaoRouter.get("/refresh_token", 
+sessaoRouter.get("/renovar_token", 
     refreshTokenLimiter,
     refreshController
 );
