@@ -9,13 +9,15 @@ import { validarTokenMiddleware } from "../middlewares/validarToken.middleware";
 import { downloadRelatorioSchema } from "../schema/pedido/downloadRelatorio.schema";
 import { validarTokenFixoMiddleware } from "../middlewares/validarTokenFixo.middleware";
 import { criarPedidoLimiter, downloadRelatorioLimiter, enviarComprovanteLimiter } from "../limiters/pedido.limiter";
+import { validarPerfilAcessoMiddleware } from "../middlewares/validarPerfilAcesso.middleware";
 
 const pedidoRouter = Router();
 
 
 // inserir pedido saib
-pedidoRouter.post('/criar_pedido',
-    validarTokenFixoMiddleware, 
+pedidoRouter.post('/criar_pedido_saib',
+    validarTokenMiddleware,
+    validarPerfilAcessoMiddleware(['gestao, faturamento, rh']),
     validadorDadosMiddleware(criarPedidoSchema),
     criarPedidoLimiter,
     criarPedidoController
@@ -31,6 +33,7 @@ pedidoRouter.post('/enviar_comprovante',
 
 pedidoRouter.post('/download_relatorio', 
     validarTokenMiddleware,
+    validarPerfilAcessoMiddleware(['rh']),
     validadorDadosMiddleware(downloadRelatorioSchema),
     downloadRelatorioLimiter,
     downloadRelatorioController

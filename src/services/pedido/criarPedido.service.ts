@@ -23,7 +23,7 @@ const criarPedidoService = async (dadosPedidos: ICriarPedidoRequest):Promise<IRe
     let quantidadePedidos:number;
     let pedidosCriados: IPedidoCriado[] = [];
     let pedidosParaCriarLoggins: ILog[] = [];
-
+    
     // fazendo a query no supabase na tabela "pedidos", fazendo inner join nas tabelas "usuario","pedido_produtos" e "produto"
     const { data, error } = await DataSupabase
         .from("pedidos")
@@ -48,7 +48,6 @@ const criarPedidoService = async (dadosPedidos: ICriarPedidoRequest):Promise<IRe
         .eq('usuario.cod_empresa', cod_empresa);
 
     const pedidos = data as IPedidosSupabase[];
-         
     if (error) {
         console.log(error)
         throw new AppError('Erro ao buscar pedidos: ' + error.message);
@@ -66,7 +65,7 @@ const criarPedidoService = async (dadosPedidos: ICriarPedidoRequest):Promise<IRe
             tipo_log: tipoLog.INFO
         });
 
-        throw new AppError('Não tem pedidos para serem gerados no período selecionado', 200);
+        return {mensagem: "Não tem pedidos para serem gerados no período selecionado"};
     }
 
     // Inserir um novo pedido no oracle

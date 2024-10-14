@@ -12,7 +12,7 @@ const validarTokenFixoMiddleware = async (req: Request, res:Response, next:NextF
     }
 
     if(token !== `Bearer ${process.env.TOKEN_SECR_FIX}`){
-        return res.status(403).json({ message: 'Token inválido' });
+        return res.status(403).json({ mensagem: 'Token inválido' });
     }
 
     next()

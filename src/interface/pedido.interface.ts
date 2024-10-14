@@ -13,8 +13,9 @@ interface IPedidoCriado{
 }
 
 interface IRetornoPedidoCriado {
-    quantidade: number,
-    pedidos: IPedidoCriado[]
+    quantidade?: number,
+    pedidos?: IPedidoCriado[],
+    mensagem?: string
 }
 
 interface IUsuario {

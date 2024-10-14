@@ -3,10 +3,10 @@ import { IProdutoComprovante } from '../../interface/mensageiro.interface';
 
 // Define o schema para o produto
 const produtoComprovanteSchema:yup.ObjectSchema<IProdutoComprovante> = yup.object().shape({
-    nome_produto: yup.string().required('nome: nome do produto é obrigatório'),
+    nome_produto: yup.string().required('nome_produto: nome do produto é obrigatório'),
     qtd: yup.number().required('qtd : quantidade do produto é obrigatória'),
-    valor_uni: yup.number().required('valor: valor unitario do produto é obrigatório'),
-    valor_total: yup.number().required('total: do produto é obrigatório')
+    valor_uni: yup.number().required('valor_uni: valor unitario do produto é obrigatório'),
+    valor_total: yup.number().required('valor_total: do produto é obrigatório')
 }).required();
 
 // Define o schema para o comprovante
@@ -22,7 +22,7 @@ const enviarComprovanteSchema = yup.object().shape({
         .min(1, 'produtos deve conter pelo menos um produto')
         .required('produtos é obrigatório'),
     usuario: yup.string().required('usuario: Nome do usuario está cadastrado'),
-    dataFaturamento: yup.string().required('dataFaturamento: data prevista do faturamento é obrigatório'),
+    dataFaturamento: yup.string().notRequired(),
 
 }).required();
 

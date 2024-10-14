@@ -8,7 +8,7 @@ const validarPerfilAcessoMiddleware = (perfisPermitidos: string[]) => async (req
     if (admin || perfisPermitidos.includes(perfil)) {
         return next();
     }else {
-        return res.status(403).json({ message: 'Acesso negado: permissão insuficiente.' });
+        return res.status(403).json({ mensagem: 'Acesso negado: permissão insuficiente.' });
     }
 
     
