@@ -19,7 +19,7 @@ const loginService = async (dadosLogin:ILogin):Promise<IAutorizacaoResponse> => 
     if(error){
         throw new AppError(`Erro Supabase ao tentar realizar login: ${error.message}`, 500)
     }
-
+    
       
     if(!data){
         throw new AppError("CPF ou senha incorretos", 400)
@@ -58,7 +58,7 @@ const loginService = async (dadosLogin:ILogin):Promise<IAutorizacaoResponse> => 
         throw new AppError(`Erro Supabase ao tentar atualizar o token: ${updateError.message}`, 500);
     }
 
-
+    
 
     return {
         token: tokenAcesso,
